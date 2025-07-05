@@ -8,6 +8,13 @@ const Register = () => import('@/views/Register.vue')
 const Home = () => import('@/views/Home.vue')
 const Profile = () => import('@/views/Profile.vue')
 const Create = () => import('@/views/Create.vue')
+const ScriptCreator = () => import('@/views/ScriptCreator.vue')
+
+// Create子页面
+const CreateExploringLabel = () => import('@/views/Create/ExploringLabel.vue')
+const CreateInterestLabel = () => import('@/views/Create/InterestLabel.vue')
+const CreateLocationMap = () => import('@/views/Create/LocationMap.vue')
+const CreateScriptCustomization = () => import('@/views/Create/ScriptCustomization.vue')
 
 // 路由配置
 const routes = [
@@ -21,7 +28,7 @@ const routes = [
     component: Splash,
     meta: {
       title: '灵探蓝途',
-      hideFromHistory: true // 不在历史记录中显示
+      hideFromHistory: true
     }
   },
   {
@@ -54,6 +61,47 @@ const routes = [
     component: Create,
     meta: {
       title: '景点选择 - 灵探蓝途'
+    }
+  },
+  {
+    path: '/script-creator',
+    name: 'ScriptCreator',
+    component: ScriptCreator,
+    meta: {
+      title: '创建剧本 - 灵探蓝途'
+    }
+  },
+  // Create子页面路由
+  {
+    path: '/create/exploring-label',
+    name: 'CreateExploringLabel',
+    component: CreateExploringLabel,
+    meta: {
+      title: '探索标签 - 灵探蓝途'
+    }
+  },
+  {
+    path: '/create/interest-label',
+    name: 'CreateInterestLabel',
+    component: CreateInterestLabel,
+    meta: {
+      title: '兴趣标签 - 灵探蓝途'
+    }
+  },
+  {
+    path: '/create/location-map',
+    name: 'CreateLocationMap',
+    component: CreateLocationMap,
+    meta: {
+      title: '位置地图 - 灵探蓝途'
+    }
+  },
+  {
+    path: '/create/script-customization',
+    name: 'CreateScriptCustomization',
+    component: CreateScriptCustomization,
+    meta: {
+      title: '剧本定制 - 灵探蓝途'
     }
   },
   {

@@ -1,41 +1,51 @@
 <template>
-  <van-tabbar 
-    :active="activeTab" 
-    @change="handleTabChange"
-    :safe-area-inset-bottom="true"
-    class="custom-tabbar"
-  >
-    <!-- 首页 -->
-    <van-tabbar-item name="home" to="/home">
-      <template #icon="{ active }">
-        <FontAwesomeIcon 
-          :icon="active ? 'home' : ['far', 'home']" 
-          class="tab-icon"
-        />
-      </template>
-      首页
-    </van-tabbar-item>
-
-    <!-- 创建剧本按钮 -->
-    <van-tabbar-item name="create" to="/create" class="create-tab">
-      <template #icon>
-        <div class="create-button">
-          <FontAwesomeIcon icon="plus" class="create-icon" />
+  <div class="bottom-navigation">
+    <div class="nav-container">
+      <!-- 首页 -->
+      <div 
+        :class="['nav-item', { active: activeTab === 'home' }]"
+        @click="handleNavigate('home')"
+      >
+        <div class="nav-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9,22 9,12 15,12 15,22"/>
+          </svg>
         </div>
-      </template>
-    </van-tabbar-item>
+        <span class="nav-text">首页</span>
+      </div>
 
-    <!-- 我的 -->
-    <van-tabbar-item name="profile" to="/profile" :badge="hasNotification ? 1 : null">
-      <template #icon="{ active }">
-        <FontAwesomeIcon 
-          :icon="active ? 'user' : ['far', 'user']" 
-          class="tab-icon"
-        />
-      </template>
-      我的
-    </van-tabbar-item>
-  </van-tabbar>
+      <!-- 中间创建按钮 -->
+      <div class="center-section">
+        <div 
+          :class="['create-button', { active: activeTab === 'create' }]"
+          @click="handleNavigate('create')"
+        >
+          <div class="create-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- 我的 -->
+      <div 
+        :class="['nav-item', { active: activeTab === 'profile' }]"
+        @click="handleNavigate('profile')"
+      >
+        <div class="nav-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          <div v-if="hasNotification" class="notification-dot"></div>
+        </div>
+        <span class="nav-text">我的</span>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -64,13 +74,13 @@ const activeTab = computed(() => {
   const routeName = route.name as string
   if (routeName === 'Home') return 'home'
   if (routeName === 'Profile') return 'profile'
-  if (routeName === 'Create') return 'create'
+  if (routeName === 'Create' || routeName?.startsWith('Create')) return 'create'
   return 'home'
 })
 
-// 处理tab切换
-const handleTabChange = (name: string | number) => {
-  emit('navigate', name as string)
+// 处理导航
+const handleNavigate = (name: string) => {
+  emit('navigate', name)
   
   switch (name) {
     case 'home':
@@ -87,82 +97,6 @@ const handleTabChange = (name: string | number) => {
 </script>
 
 <style scoped>
-.custom-tabbar {
-  --van-tabbar-background: #fff;
-  --van-tabbar-item-text-color: #666;
-  --van-tabbar-item-active-color: #2196F3;
-  --van-tabbar-item-active-background: transparent;
-}
-
-.tab-icon {
-  font-size: 20px;
-  transition: all 0.3s ease;
-}
-
-/* 创建按钮特殊样式 */
-.create-tab {
-  position: relative;
-}
-
-.create-button {
-  width: 48px;
-  height: 48px;
-  background: #888;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  margin-bottom: 8px;
-}
-
-.create-button:hover {
-  background: #666;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-}
-
-.create-button:active {
-  transform: translateY(0);
-}
-
-.create-icon {
-  color: white;
-  font-size: 20px;
-}
-
-/* Vant tabbar自定义样式 */
-:deep(.van-tabbar-item) {
-  transition: all 0.3s ease;
-}
-
-:deep(.van-tabbar-item:hover) {
-  background: rgba(33, 150, 243, 0.05);
-}
-
-:deep(.van-tabbar-item--active) {
-  background: rgba(33, 150, 243, 0.08);
-}
-
-/* 响应式适配 */
-@media (max-width: 393px) {
-  .create-button {
-    width: 44px;
-    height: 44px;
-  }
-  
-  .create-icon {
-    font-size: 18px;
-  }
-  
-  .tab-icon {
-    font-size: 18px;
-  }
-}
-</style>
-
-<style scoped>
 .bottom-navigation {
   position: fixed;
   bottom: 0;
@@ -173,6 +107,7 @@ const handleTabChange = (name: string | number) => {
   z-index: 1000;
   /* 适配iPhone底部安全区域 */
   padding-bottom: var(--bottom-safe-height, 20px);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .nav-container {
@@ -211,6 +146,7 @@ const handleTabChange = (name: string | number) => {
   justify-content: center;
   color: #666;
   transition: color 0.2s ease;
+  position: relative;
 }
 
 .nav-item.active .nav-icon {
@@ -317,15 +253,10 @@ const handleTabChange = (name: string | number) => {
   .nav-text {
     font-size: 11px;
   }
-}
-
-/* 适配不同状态的布局 */
-.nav-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  padding: 8px 20px 12px;
-  max-width: 393px;
-  margin: 0 auto;
+  
+  .create-button {
+    width: 52px;
+    height: 52px;
+  }
 }
 </style>
