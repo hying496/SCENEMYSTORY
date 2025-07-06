@@ -1,0 +1,153 @@
+{
+  "attractionList": [
+    {
+      "attractionName": "文德路南",
+      "stationList": [
+        {
+          "stationName": "文德路牌坊站",
+          "explorationPointList": [
+            {
+              "questionType": "选择题",
+              "questionContent": "文德路以经营什么类型的商品闻名？",
+              "options": ["A. 古玩字画", "B. 海鲜水产", "C. 电子产品"],
+              "correctAnswer": "A",
+              "answerExplanation": "文德路被誉为“广州的文化街”，以经营古玩字画、文房四宝而闻名。"
+            },
+            {
+              "questionType": "填空题",
+              "questionContent": "文德路临近广州著名的古代书院______。",
+              "correctAnswer": "番禺学宫",
+              "answerExplanation": "番禺学宫又称广州农民运动讲习所旧址，距离文德路较近，历史文化气息浓厚。"
+            },
+            {
+              "questionType": "判断题",
+              "questionContent": "文德路是广州新开发的商业街。",
+              "correctAnswer": false,
+              "answerExplanation": "文德路历史悠久，自古以来就是广州的文化聚集地，并非新开发的商业街。"
+            }
+          ]
+        },
+        {
+          "stationName": "字画商铺集中站",
+          "explorationPointList": [
+            {
+              "questionType": "选择题",
+              "questionContent": "文德路常见的书法字体除了楷书，还有？",
+              "options": ["A. 梵文", "B. 篆书", "C. 盲文"],
+              "correctAnswer": "B",
+              "answerExplanation": "篆书是中国传统书法字体之一，在文德路的字画作品中较为常见 。"
+            },
+            {
+              "questionType": "填空题",
+              "questionContent": "文德路售卖的传统绘画工具中，用来装墨汁的容器叫______。",
+              "correctAnswer": "砚台",
+              "answerExplanation": "砚台与笔、墨、纸是中国传统的文房四宝之一，是用于研磨和盛放墨汁的工具。"
+            },
+            {
+              "questionType": "判断题",
+              "questionContent": "文德路的字画商铺只售卖现代作品。",
+              "correctAnswer": false,
+              "answerExplanation": "文德路的字画商铺不仅售卖现代作品，也有许多古代及近代的字画珍品。"
+            }
+          ]
+        },
+        {
+          "stationName": "古籍书店站",
+          "explorationPointList": [
+            {
+              "questionType": "选择题",
+              "questionContent": "在文德路的古籍书店中，最有可能找到以下哪类书籍？",
+              "options": ["A. 最新科幻小说", "B. 中医古籍善本", "C. 时尚杂志"],
+              "correctAnswer": "B",
+              "answerExplanation": "文德路的古籍书店以收藏和售卖各类古籍、善本为主，中医古籍善本是常见的收藏类型。"
+            },
+            {
+              "questionType": "填空题",
+              "questionContent": "中国古代书籍装订形式中，用线将书页连缀成册的装订方式叫______。",
+              "correctAnswer": "线装",
+              "answerExplanation": "线装是中国古代书籍的主要装订形式之一，具有美观、便于翻阅和保存的特点。"
+            },
+            {
+              "questionType": "判断题",
+              "questionContent": "文德路的古籍都是复刻本，没有真迹。",
+              "correctAnswer": false,
+              "answerExplanation": "文德路偶尔会出现珍贵的古籍真迹，吸引众多收藏爱好者。"
+            }
+          ]
+        },
+        {
+          "stationName": "文房四宝市场站",
+          "explorationPointList": [
+            {
+              "questionType": "选择题",
+              "questionContent": "以下哪种不属于文房四宝？",
+              "options": ["A. 镇纸", "B. 笔", "C. 墨"],
+              "correctAnswer": "A",
+              "answerExplanation": "文房四宝特指笔、墨、纸、砚，镇纸是辅助文具，不属于文房四宝范畴。"
+            },
+            {
+              "questionType": "填空题",
+              "questionContent": "制作毛笔的主要动物毛发有羊毫、狼毫和______。",
+              "correctAnswer": "兼毫",
+              "answerExplanation": "兼毫毛笔是用两种以上动物毛制成，兼具羊毫和狼毫的特性。"
+            },
+            {
+              "questionType": "判断题",
+              "questionContent": "宣纸是现代才发明的纸张类型。",
+              "correctAnswer": false,
+              "answerExplanation": "宣纸始于唐代，迄今已有1500余年历史，是中国传统古典书画用纸。"
+            }
+          ]
+        },
+        {
+          "stationName": "传统建筑观赏站",
+          "explorationPointList": [
+            {
+              "questionType": "选择题",
+              "questionContent": "文德路传统建筑屋顶常见的装饰构件是？",
+              "options": ["A. 马头墙", "B. 琉璃瓦", "C. 飞檐翘角"],
+              "correctAnswer": "C",
+              "answerExplanation": "飞檐翘角是中国传统建筑中常见的屋顶装饰形式，在文德路传统建筑上多有体现。"
+            },
+            {
+              "questionType": "填空题",
+              "questionContent": "中国古代建筑中，用于支撑屋顶的木制圆柱叫______。",
+              "correctAnswer": "立柱",
+              "answerExplanation": "立柱是传统建筑中重要的结构部件，起到承重和支撑的作用。"
+            },
+            {
+              "questionType": "判断题",
+              "questionContent": "文德路的传统建筑都采用钢筋混凝土结构。",
+              "correctAnswer": false,
+              "answerExplanation": "文德路的传统建筑多采用砖木结构，保留了古建筑的特色。"
+            }
+          ]
+        },
+        {
+          "stationName": "文化活动广场站",
+          "explorationPointList": [
+            {
+              "questionType": "选择题",
+              "questionContent": "文德路文化广场常举办的活动是？",
+              "options": ["A. 汽车展销会", "B. 书画拍卖会", "C. 海鲜美食节"],
+              "correctAnswer": "B",
+              "answerExplanation": "依托文德路的文化氛围，文化广场常举办书画拍卖会、艺术展览等活动。"
+            },
+            {
+              "questionType": "填空题",
+              "questionContent": "书画拍卖中，对艺术品进行专业评估的人员称为______。",
+              "correctAnswer": "鉴定师",
+              "answerExplanation": "鉴定师具备专业知识，能够对书画等艺术品的真伪、价值进行评估。"
+            },
+            {
+              "questionType": "判断题",
+              "questionContent": "文德路文化广场只在白天开放。",
+              "correctAnswer": false,
+              "answerExplanation": "文化广场会举办夜间活动，如灯光艺术展等，并非只在白天开放。"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -7,10 +7,7 @@
         @click="handleNavigate('home')"
       >
         <div class="nav-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-            <polyline points="9,22 9,12 15,12 15,22"/>
-          </svg>
+          <FontAwesomeIcon :icon="activeTab === 'home' ? 'home' : ['far', 'home']" />
         </div>
         <span class="nav-text">首页</span>
       </div>
@@ -22,10 +19,7 @@
           @click="handleNavigate('create')"
         >
           <div class="create-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="12" y1="5" x2="12" y2="19"/>
-              <line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
+            <FontAwesomeIcon icon="plus" />
           </div>
         </div>
       </div>
@@ -36,10 +30,7 @@
         @click="handleNavigate('profile')"
       >
         <div class="nav-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-            <circle cx="12" cy="7" r="4"/>
-          </svg>
+          <FontAwesomeIcon :icon="activeTab === 'profile' ? 'user' : ['far', 'user']" />
           <div v-if="hasNotification" class="notification-dot"></div>
         </div>
         <span class="nav-text">我的</span>
@@ -51,6 +42,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 interface Props {
   hasNotification?: boolean
@@ -147,6 +139,7 @@ const handleNavigate = (name: string) => {
   color: #666;
   transition: color 0.2s ease;
   position: relative;
+  font-size: 20px;
 }
 
 .nav-item.active .nav-icon {
@@ -208,6 +201,7 @@ const handleNavigate = (name: string) => {
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 20px;
 }
 
 /* 通知小红点 */
@@ -257,6 +251,14 @@ const handleNavigate = (name: string) => {
   .create-button {
     width: 52px;
     height: 52px;
+  }
+  
+  .nav-icon {
+    font-size: 18px;
+  }
+  
+  .create-icon {
+    font-size: 18px;
   }
 }
 </style>

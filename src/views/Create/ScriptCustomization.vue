@@ -375,7 +375,7 @@ const generateScript = async () => {
     // 这里可以跳转到生成结果页面
     setTimeout(() => {
       showToast('跳转到剧本详情页面')
-      // router.push('/script-detail')
+      router.push('/game')
     }, 1500)
     
   } catch (error) {

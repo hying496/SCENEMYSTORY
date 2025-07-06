@@ -9,15 +9,7 @@
         <!-- 用户名输入 -->
         <FormInput
           v-model="registerForm.username"
-          label="用户名"
           placeholder="请输入用户名"
-        />
-
-        <!-- 账号输入 -->
-        <FormInput
-          v-model="registerForm.account"
-          label="账号"
-          placeholder="请输入账号"
         />
 
         <!-- 密码输入 -->
@@ -103,7 +95,6 @@ const router = useRouter()
 // 表单数据
 const registerForm = ref({
   username: '',
-  account: '',
   password: '',
   gender: ''
 })
@@ -120,40 +111,68 @@ const toast = ref({
 // 计算属性
 const canRegister = computed(() => {
   return registerForm.value.username.trim() && 
-         registerForm.value.account.trim() && 
          registerForm.value.password.trim() && 
          registerForm.value.gender
 })
 
-// 模拟注册
+// 性别映射表
+const genderMap: Record<string, string> = {
+  male: 'm',
+  female: 'f',
+  other: 'o'
+}
+
+// 注册函数，调用后端接口
 const handleRegister = async () => {
   if (!canRegister.value) return
-  
+
   isLoading.value = true
   showToast('注册中...', 'loading')
-  
+
   try {
-    // 模拟API调用延迟
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    
-    // 模拟注册成功
+    // 转换 gender 为单字符
+    const genderChar = genderMap[registerForm.value.gender] || null
+
+    const payload = {
+      username: registerForm.value.username.trim(),
+      password: registerForm.value.password,
+      gender: genderChar,
+      hobbies: [],   // 目前无输入，传空数组
+      star_id: []    // 目前无输入，传空数组
+    }
+
+    const res = await fetch('http://114.215.192.26:5000/api/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    })
+
+    if (!res.ok) {
+      const errorData = await res.json()
+      throw new Error(errorData.detail || '注册失败')
+    }
+
+    const data = await res.json()
+
     showToast('注册成功！正在登录...', 'success')
-    
-    // 注册成功后自动登录
+
+    // 保存登录状态
     localStorage.setItem('isLoggedIn', 'true')
     localStorage.setItem('userInfo', JSON.stringify({
-      username: registerForm.value.username,
-      account: registerForm.value.account,
-      gender: registerForm.value.gender,
+      username: data.username,
+      user_id: data.user_id,
+      gender: data.gender,
       registerTime: Date.now(),
       loginTime: Date.now()
     }))
-    
+
     setTimeout(() => {
       router.push('/home')
     }, 1000)
-  } catch (error) {
-    showToast('注册失败，请重试', 'error')
+  } catch (error: any) {
+    showToast(error.message || '注册失败，请重试', 'error')
   } finally {
     isLoading.value = false
   }

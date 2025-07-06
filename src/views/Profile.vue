@@ -10,8 +10,8 @@
           <div class="bar"></div>
           <div class="bar"></div>
         </div>
-        <div class="wifi-icon">📶</div>
-        <div class="battery-icon">🔋</div>
+        <div class="wifi-icon"><FontAwesomeIcon icon="wifi" /></div>
+        <div class="battery-icon"><FontAwesomeIcon icon="battery-full" /></div>
       </div>
     </div>
 
@@ -20,8 +20,12 @@
       <!-- 用户信息卡片 -->
       <div class="user-card">
         <div class="user-avatar">
-          <div class="avatar">👤</div>
-          <div class="avatar-badge">📷</div>
+          <div class="avatar">
+            <FontAwesomeIcon icon="user" />
+          </div>
+          <div class="avatar-badge">
+            <FontAwesomeIcon icon="camera" />
+          </div>
         </div>
         <div class="user-info">
           <h2 class="username">探险家</h2>
@@ -33,19 +37,31 @@
       <!-- 功能菜单 -->
       <div class="menu-section">
         <div class="menu-item" @click="showToast('我的订单')">
-          <div class="menu-icon">📋</div>
+          <div class="menu-icon">
+            <FontAwesomeIcon icon="clipboard" />
+          </div>
           <span class="menu-text">我的订单</span>
-          <span class="arrow">></span>
+          <span class="arrow">
+            <FontAwesomeIcon icon="chevron-right" />
+          </span>
         </div>
         <div class="menu-item" @click="showToast('我的收藏')">
-          <div class="menu-icon">❤️</div>
+          <div class="menu-icon">
+            <FontAwesomeIcon icon="heart" />
+          </div>
           <span class="menu-text">我的收藏</span>
-          <span class="arrow">></span>
+          <span class="arrow">
+            <FontAwesomeIcon icon="chevron-right" />
+          </span>
         </div>
         <div class="menu-item" @click="showToast('设置')">
-          <div class="menu-icon">⚙️</div>
+          <div class="menu-icon">
+            <FontAwesomeIcon icon="cog" />
+          </div>
           <span class="menu-text">设置</span>
-          <span class="arrow">></span>
+          <span class="arrow">
+            <FontAwesomeIcon icon="chevron-right" />
+          </span>
         </div>
       </div>
 
@@ -73,6 +89,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import BottomNavigation from '@/components/BottomNavigation.vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 const router = useRouter()
 
@@ -133,6 +150,7 @@ const handleLogout = () => {
   color: #333;
   font-size: 16px;
   font-weight: 600;
+  background: white;
 }
 
 .status-icons {
@@ -191,6 +209,7 @@ const handleLogout = () => {
   align-items: center;
   justify-content: center;
   font-size: 28px;
+  color: #2196F3;
 }
 
 .avatar-badge {
@@ -204,7 +223,8 @@ const handleLogout = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  font-size: 8px;
+  color: white;
   border: 2px solid white;
 }
 
@@ -268,9 +288,10 @@ const handleLogout = () => {
 }
 
 .menu-icon {
-  font-size: 20px;
+  font-size: 18px;
   width: 24px;
   text-align: center;
+  color: #666;
 }
 
 .menu-text {
@@ -280,7 +301,7 @@ const handleLogout = () => {
 }
 
 .arrow {
-  font-size: 14px;
+  font-size: 12px;
   color: #999;
 }
 

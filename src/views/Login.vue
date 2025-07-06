@@ -8,7 +8,7 @@
       <form @submit.prevent="handleLogin">
         <!-- 账号输入 -->
         <FormInput
-          v-model="loginForm.account"
+          v-model="loginForm.username"
           label="账号"
           placeholder="请输入账号"
         />
@@ -55,7 +55,6 @@
           type="submit"
           :disabled="!canLogin"
           :loading="isLoading"
-          @click="handleLogin"
         />
       </form>
 
@@ -85,9 +84,9 @@ import BottomActions from '@/components/BottomActions.vue'
 
 const router = useRouter()
 
-// 表单数据
+// 表单数据，注意这里字段名必须和后端接口定义的字段名一致
 const loginForm = ref({
-  account: '',
+  username: '',
   password: ''
 })
 
@@ -100,37 +99,51 @@ const toast = ref({
   type: 'info'
 })
 
-// 计算属性
+// 计算属性，判断是否可以登录
 const canLogin = computed(() => {
-  return loginForm.value.account.trim() && loginForm.value.password.trim()
+  return loginForm.value.username.trim() && loginForm.value.password.trim()
 })
 
-// 模拟登录
+// 登录函数
 const handleLogin = async () => {
   if (!canLogin.value) return
-  
+
   isLoading.value = true
   showToast('登录中...', 'loading')
-  
+
   try {
-    // 模拟API调用延迟
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    
-    // 模拟登录成功
+    const res = await fetch('http://114.215.192.26:5000/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: loginForm.value.username.trim(),
+        password: loginForm.value.password
+      })
+    })
+
+    const data = await res.json()
+
+    if (!res.ok || !data.success) {
+      throw new Error(data.message || '无效的用户名或密码')
+    }
+
     showToast('登录成功！', 'success')
-    
-    // 保存登录状态到本地存储
+
+    // 保存登录状态和用户信息
     localStorage.setItem('isLoggedIn', 'true')
     localStorage.setItem('userInfo', JSON.stringify({
-      username: loginForm.value.account,
+      username: loginForm.value.username,
+      user_id: data.user_id,
       loginTime: Date.now()
     }))
-    
+
     setTimeout(() => {
       router.push('/home')
     }, 1000)
-  } catch (error) {
-    showToast('登录失败，请重试', 'error')
+  } catch (error: any) {
+    showToast(error.message || '登录失败，请重试', 'error')
   } finally {
     isLoading.value = false
   }
@@ -141,7 +154,7 @@ const goToRegister = () => {
   router.push('/register')
 }
 
-// 微信登录
+// 微信登录（示例）
 const handleWechatLogin = () => {
   showToast('微信登录功能即将推出', 'info')
 }
@@ -153,7 +166,7 @@ const showToast = (message: string, type: string = 'info') => {
     message,
     type
   }
-  
+
   setTimeout(() => {
     toast.value.show = false
   }, 2000)
@@ -246,4 +259,3 @@ const showToast = (message: string, type: string = 'info') => {
   10%, 90% { opacity: 1; }
 }
 </style>
-

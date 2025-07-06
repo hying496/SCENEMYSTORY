@@ -10,25 +10,19 @@
           <div class="bar"></div>
           <div class="bar"></div>
         </div>
-        <div class="wifi-icon">📶</div>
-        <div class="battery-icon">🔋</div>
+        <div class="wifi-icon"><FontAwesomeIcon icon="wifi" /></div>
+        <div class="battery-icon"><FontAwesomeIcon icon="battery-full" /></div>
       </div>
     </div>
 
     <!-- 头部导航 -->
     <div class="header">
       <button class="back-btn" @click="goBack">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M19 12H5m7-7-7 7 7 7"/>
-        </svg>
+        <FontAwesomeIcon icon="arrow-left" />
       </button>
       <h1 class="title">创建剧本</h1>
       <button class="help-btn" @click="showHelp">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-          <circle cx="12" cy="17" r="1"/>
-        </svg>
+        <FontAwesomeIcon icon="question-circle" />
       </button>
     </div>
 
@@ -47,9 +41,7 @@
               <p class="step-description">城市人文、自然风光、文化沉浸、户外冒险</p>
             </div>
             <div class="step-arrow">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="9,18 15,12 9,6"/>
-              </svg>
+              <FontAwesomeIcon icon="chevron-right" />
             </div>
           </div>
 
@@ -60,9 +52,7 @@
               <p class="step-description">海滨日光、公园徒步、首脑牧场、老城街区</p>
             </div>
             <div class="step-arrow">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="9,18 15,12 9,6"/>
-              </svg>
+              <FontAwesomeIcon icon="chevron-right" />
             </div>
           </div>
 
@@ -73,9 +63,7 @@
               <p class="step-description">查看地图，选择具体的活动地点</p>
             </div>
             <div class="step-arrow">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="9,18 15,12 9,6"/>
-              </svg>
+              <FontAwesomeIcon icon="chevron-right" />
             </div>
           </div>
 
@@ -86,9 +74,7 @@
               <p class="step-description">个性化定制你的剧本杀体验</p>
             </div>
             <div class="step-arrow">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="9,18 15,12 9,6"/>
-              </svg>
+              <FontAwesomeIcon icon="chevron-right" />
             </div>
           </div>
         </div>
@@ -99,7 +85,9 @@
         <h3 class="section-title">快速创建</h3>
         <div class="quick-options">
           <div class="quick-option" @click="quickCreate('popular')">
-            <div class="option-icon">🔥</div>
+            <div class="option-icon">
+              <FontAwesomeIcon icon="fire" />
+            </div>
             <div class="option-text">
               <div class="option-title">热门推荐</div>
               <div class="option-desc">基于热门景点快速生成</div>
@@ -107,7 +95,9 @@
           </div>
           
           <div class="quick-option" @click="quickCreate('nearby')">
-            <div class="option-icon">📍</div>
+            <div class="option-icon">
+              <FontAwesomeIcon icon="map-marker-alt" />
+            </div>
             <div class="option-text">
               <div class="option-title">附近景点</div>
               <div class="option-desc">基于当前位置推荐</div>
@@ -115,7 +105,9 @@
           </div>
           
           <div class="quick-option" @click="quickCreate('random')">
-            <div class="option-icon">🎲</div>
+            <div class="option-icon">
+              <FontAwesomeIcon icon="dice" />
+            </div>
             <div class="option-text">
               <div class="option-title">随机探索</div>
               <div class="option-desc">让我们为你随机选择</div>
@@ -166,6 +158,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import BottomNavigation from '@/components/BottomNavigation.vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 const router = useRouter()
 
@@ -266,7 +259,7 @@ const showToast = (message: string) => {
 <style scoped>
 .script-creator-container {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   background: #F8F9FA;
   display: flex;
   flex-direction: column;
@@ -284,6 +277,8 @@ const showToast = (message: string) => {
   font-size: 16px;
   font-weight: 600;
   background: white;
+  border-bottom: 1px solid #F0F0F0;
+  flex-shrink: 0;
 }
 
 .status-icons {
@@ -317,6 +312,7 @@ const showToast = (message: string) => {
   padding: 12px 20px;
   background: white;
   border-bottom: 1px solid #F0F0F0;
+  flex-shrink: 0;
 }
 
 .back-btn, .help-btn {
@@ -326,6 +322,10 @@ const showToast = (message: string) => {
   cursor: pointer;
   border-radius: 8px;
   color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
 }
 
 .back-btn:hover, .help-btn:hover {
@@ -428,6 +428,7 @@ const showToast = (message: string) => {
 .step-arrow {
   color: #CCC;
   flex-shrink: 0;
+  font-size: 14px;
 }
 
 /* 快速创建 */
@@ -469,9 +470,10 @@ const showToast = (message: string) => {
 }
 
 .option-icon {
-  font-size: 24px;
+  font-size: 20px;
   width: 40px;
   text-align: center;
+  color: #2196F3;
 }
 
 .option-text {

@@ -10,17 +10,15 @@
           <div class="bar"></div>
           <div class="bar"></div>
         </div>
-        <div class="wifi-icon">📶</div>
-        <div class="battery-icon">🔋</div>
+        <div class="wifi-icon"><FontAwesomeIcon icon="wifi" /></div>
+        <div class="battery-icon"><FontAwesomeIcon icon="battery-full" /></div>
       </div>
     </div>
 
     <!-- 头部导航 -->
     <div class="header">
       <button class="back-btn" @click="goBack">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M19 12H5m7-7-7 7 7 7"/>
-        </svg>
+        <FontAwesomeIcon icon="arrow-left" />
       </button>
       <h1 class="title">景点选择</h1>
       <button class="create-btn" @click="goToScriptCreator">创建剧本</button>
@@ -30,11 +28,11 @@
     <div class="search-section">
       <div class="location-selector">
         <div class="current-location">
-          <span class="location-icon">📍</span>
+          <FontAwesomeIcon icon="map-marker-alt" class="location-icon" />
           <span class="location-text">广州</span>
         </div>
         <div class="search-bar">
-          <span class="search-icon">🔍</span>
+          <FontAwesomeIcon icon="search" class="search-icon" />
           <input 
             type="text" 
             placeholder="搜索城市/景点/历史记录"
@@ -49,20 +47,32 @@
     <div class="hot-search">
       <div class="section-header">
         <h3 class="section-title">热门搜索</h3>
-        <span class="more-link" @click="showMore">更多 ></span>
+        <span class="more-link" @click="showMore">更多 <FontAwesomeIcon icon="chevron-right" /></span>
       </div>
       <div class="hot-items">
         <div class="hot-item" @click="selectLocation('白云山')">
-          <div class="item-image-placeholder">🏔️</div>
+          <div class="item-image-placeholder">
+            <FontAwesomeIcon icon="mountain" />
+          </div>
           <span class="item-name">白云山 <span class="item-subtitle">(城市绿肺)</span></span>
         </div>
         <div class="hot-item" @click="selectLocation('上下九')">
           <span class="item-name">上下九 <span class="item-subtitle">(骑楼美食街)</span></span>
-          <div class="item-image-placeholder">🏮</div>
+          <div class="item-image-placeholder">
+            <FontAwesomeIcon icon="store" />
+          </div>
         </div>
         <div class="hot-item" @click="selectLocation('圣心大教堂')">
-          <div class="item-image-placeholder">⛪</div>
+          <div class="item-image-placeholder">
+            <FontAwesomeIcon icon="church" />
+          </div>
           <span class="item-name">圣心大教堂 <span class="item-subtitle">(石室圣心)</span></span>
+        </div>
+        <div class="hot-item clickable" @click="goToExploringLabel('文德路南')">
+          <div class="item-image-placeholder wende-style">
+            <FontAwesomeIcon icon="building" />
+          </div>
+          <span class="item-name">文德路南 <span class="item-subtitle">(历史文化街区)</span></span>
         </div>
       </div>
     </div>
@@ -130,6 +140,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import BottomNavigation from '@/components/BottomNavigation.vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 const router = useRouter()
 
@@ -206,6 +217,18 @@ const showMore = () => {
   showToast('查看更多热门搜索')
 }
 
+// 新增：跳转到探索标签页面
+const goToExploringLabel = (locationName?: string) => {
+  if (locationName) {
+    showToast(`正在为您打开${locationName}的探索之旅...`)
+    setTimeout(() => {
+      router.push('/create/exploring-label')
+    }, 1000)
+  } else {
+    router.push('/create/exploring-label')
+  }
+}
+
 const scrollToLetter = (letter: string) => {
   currentLetter.value = letter
   const element = document.getElementById(`letter-${letter}`)
@@ -247,12 +270,49 @@ onMounted(() => {
 <style scoped>
 .create-script-container {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   background: #F8F9FA;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
+
+/* 状态栏样式 */
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 44px;
+  padding: 0 20px;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+  background: white;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.status-icons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.signal-bars {
+  display: flex;
+  align-items: end;
+  gap: 2px;
+}
+
+.bar {
+  width: 3px;
+  background: #333;
+  border-radius: 1px;
+}
+
+.bar:nth-child(1) { height: 4px; }
+.bar:nth-child(2) { height: 6px; }
+.bar:nth-child(3) { height: 8px; }
+.bar:nth-child(4) { height: 10px; }
 
 /* 头部导航 */
 .header {
@@ -262,18 +322,22 @@ onMounted(() => {
   padding: 12px 20px;
   background: white;
   border-bottom: 1px solid #F0F0F0;
+  flex-shrink: 0;
 }
 
-.back-btn, .help-btn {
+.back-btn {
   background: none;
   border: none;
   padding: 8px;
   cursor: pointer;
   border-radius: 8px;
   color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.back-btn:hover, .help-btn:hover {
+.back-btn:hover {
   background: #F5F5F5;
 }
 
@@ -284,227 +348,290 @@ onMounted(() => {
   margin: 0;
 }
 
-/* 主要内容 */
-.main-content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px;
-  margin-bottom: 80px;
+.create-btn {
+  background: none;
+  border: none;
+  color: #2196F3;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
 }
 
-/* 流程指引 */
-.process-guide {
+.create-btn:hover {
+  background: #F0F8FF;
+}
+
+/* 搜索区域 */
+.search-section {
+  padding: 16px 20px;
   background: white;
-  border-radius: 16px;
-  padding: 24px;
-  margin-bottom: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid #F0F0F0;
+  flex-shrink: 0;
 }
 
-.guide-title {
-  font-size: 20px;
-  font-weight: 600;
-  color: #333;
-  margin: 0 0 8px 0;
-  text-align: center;
-}
-
-.guide-subtitle {
-  font-size: 14px;
-  color: #666;
-  margin: 0 0 24px 0;
-  text-align: center;
-}
-
-.process-steps {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.step-item {
+.location-selector {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 16px;
-  background: #F8F9FA;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  gap: 12px;
 }
 
-.step-item:hover {
+.current-location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   background: #E3F2FD;
-  transform: translateX(4px);
-}
-
-.step-number {
-  width: 32px;
-  height: 32px;
-  background: #2196F3;
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 20px;
   font-size: 14px;
-  flex-shrink: 0;
+  color: #2196F3;
+  white-space: nowrap;
 }
 
-.step-content {
-  flex: 1;
+.location-icon {
+  font-size: 12px;
 }
 
-.step-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #333;
-  margin: 0 0 4px 0;
-}
-
-.step-description {
-  font-size: 13px;
-  color: #666;
-  margin: 0;
-  line-height: 1.4;
-}
-
-.step-arrow {
-  color: #CCC;
-  flex-shrink: 0;
-}
-
-/* 快速创建 */
-.quick-create {
-  background: white;
-  border-radius: 16px;
-  padding: 20px;
-  margin-bottom: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.section-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
-  margin: 0 0 16px 0;
-}
-
-.quick-options {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.quick-option {
+.search-bar {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px;
-  background: #F8F9FA;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.quick-option:hover {
-  background: #E8F5E8;
-  transform: translateY(-2px);
-}
-
-.option-icon {
-  font-size: 24px;
-  width: 40px;
-  text-align: center;
-}
-
-.option-text {
+  background: #F5F5F5;
+  border-radius: 20px;
+  padding: 8px 16px;
   flex: 1;
-}
-
-.option-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 4px;
-}
-
-.option-desc {
-  font-size: 13px;
-  color: #666;
-}
-
-/* 我的草稿 */
-.my-drafts {
-  background: white;
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.draft-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.draft-item {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px;
-  background: #F8F9FA;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.draft-item:hover {
-  background: #FFF3E0;
-  transform: translateY(-2px);
-}
-
-.draft-info {
-  flex: 1;
-}
-
-.draft-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 4px;
-}
-
-.draft-time {
-  font-size: 13px;
-  color: #666;
-}
-
-.draft-progress {
-  display: flex;
-  align-items: center;
   gap: 8px;
 }
 
-.progress-bar {
-  width: 60px;
-  height: 6px;
-  background: #E0E0E0;
-  border-radius: 3px;
-  overflow: hidden;
+.search-icon {
+  font-size: 14px;
+  color: #999;
 }
 
-.progress-fill {
-  height: 100%;
-  background: #4CAF50;
-  transition: width 0.3s ease;
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
 }
 
-.progress-text {
+.search-input::placeholder {
+  color: #999;
+}
+
+/* 热门搜索 */
+.hot-search {
+  background: white;
+  padding: 16px 20px;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.more-link {
+  font-size: 14px;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.more-link:hover {
+  color: #2196F3;
+}
+
+.hot-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hot-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: #F8F9FA;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.hot-item:hover {
+  background: #E3F2FD;
+}
+
+.item-image-placeholder {
+  width: 50px;
+  height: 40px;
+  border-radius: 8px;
+  background: #F0F8FF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: #2196F3;
+  flex-shrink: 0;
+}
+
+.item-name {
+  font-size: 15px;
+  color: #333;
+  font-weight: 500;
+  flex: 1;
+  text-align: center;
+}
+
+.item-subtitle {
+  font-size: 13px;
+  color: #666;
+  font-weight: normal;
+}
+
+/* 景点列表 */
+.attractions-list {
+  background: white;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  margin-bottom: 80px; /* 为底部导航留空间 */
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #F0F0F0;
+  flex-shrink: 0;
+}
+
+.list-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2196F3;
+  margin: 0;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.filter-select {
+  background: #F5F5F5;
+  border: none;
+  border-radius: 16px;
+  padding: 6px 12px;
   font-size: 12px;
   color: #666;
-  min-width: 30px;
+  cursor: pointer;
+  outline: none;
+}
+
+.filter-select:focus {
+  background: #E3F2FD;
+  color: #2196F3;
+}
+
+/* 字母索引 */
+.alphabet-index {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  padding: 4px;
+  backdrop-filter: blur(10px);
+}
+
+.alphabet-item {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #666;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.alphabet-item:hover,
+.alphabet-item.active {
+  background: #2196F3;
+  color: white;
+  transform: scale(1.2);
+}
+
+/* 列表内容 */
+.list-content {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+}
+
+.letter-group {
+  position: relative;
+}
+
+.letter-header {
+  background: #E3F2FD;
+  color: #2196F3;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.attraction-item {
+  padding: 12px 20px;
+  border-bottom: 1px solid #F5F5F5;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.attraction-item:hover {
+  background: #F8F9FA;
+}
+
+.attraction-item:last-child {
+  border-bottom: none;
+}
+
+.attraction-name {
+  font-size: 15px;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.attraction-location {
+  font-size: 13px;
+  color: #666;
 }
 
 /* 提示消息 */
@@ -527,33 +654,72 @@ onMounted(() => {
   10%, 90% { opacity: 1; }
 }
 
+/* 文德路南特殊样式 */
+.wende-style {
+  background: linear-gradient(135deg, #FFE0B2 0%, #FFCC80 100%);
+  color: #E65100;
+}
+
+.hot-item.clickable {
+  position: relative;
+  transform: scale(1);
+  transition: all 0.3s ease;
+}
+
+.hot-item.clickable:hover {
+  background: #E8F5E8;
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
+}
+
+.hot-item.clickable::after {
+  content: '开始探索';
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  background: #4CAF50;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.hot-item.clickable:hover::after {
+  opacity: 1;
+}
 /* 响应式适配 */
 @media (max-width: 393px) {
   .header {
     padding: 12px 16px;
   }
   
-  .main-content {
-    padding: 16px;
+  .search-section {
+    padding: 12px 16px;
   }
   
-  .process-guide {
-    padding: 20px;
+  .hot-search {
+    padding: 12px 16px;
   }
   
-  .quick-create, .my-drafts {
-    padding: 16px;
+  .list-header {
+    padding: 12px 16px;
   }
   
-  .step-item, .quick-option, .draft-item {
-    padding: 12px;
+  .attraction-item {
+    padding: 12px 16px;
   }
   
-  .guide-title {
-    font-size: 18px;
+  .letter-header {
+    padding: 8px 16px;
   }
   
-  .section-title {
+  .item-image-placeholder {
+    width: 40px;
+    height: 35px;
     font-size: 16px;
   }
 }

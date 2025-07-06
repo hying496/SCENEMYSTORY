@@ -1,59 +1,152 @@
 <template>
   <div class="exploring-label-container">
     <!-- 状态栏 -->
-    <StatusBar />
+    <div class="status-bar">
+      <span class="time">12:00</span>
+      <div class="status-icons">
+        <div class="signal-bars">
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+        <div class="wifi-icon"><FontAwesomeIcon icon="wifi" /></div>
+        <div class="battery-icon"><FontAwesomeIcon icon="battery-full" /></div>
+      </div>
+    </div>
 
     <!-- 头部导航 -->
     <div class="header">
       <button class="back-btn" @click="goBack">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M19 12H5m7-7-7 7 7 7"/>
-        </svg>
+        <FontAwesomeIcon icon="arrow-left" />
       </button>
-      <h1 class="title">探索标签</h1>
-      <button class="create-btn" @click="createScript">创建剧本</button>
+      <h1 class="title">探索兴趣</h1>
+      <span class="location-info">文德路南</span>
     </div>
 
-    <!-- 标签导航 -->
-    <TabNavigation 
-      v-model="activeTab"
-      :tabs="tabs"
-      @change="handleTabChange"
-    />
+    <!-- 步骤指示器 -->
+    <div class="step-indicator">
+      <div class="step-info">
+        <FontAwesomeIcon icon="compass" class="step-icon" />
+        <span class="step-text">探索标签</span>
+      </div>
+      <div class="step-progress">已选{{selectedCategories.length}}/4</div>
+    </div>
 
     <!-- 内容区域 -->
     <div class="content">
       <!-- 城市人文 -->
-      <div v-if="activeTab === 'urban'" class="tab-content">
-        <CardList 
-          :items="urbanItems"
-          @click="handleItemClick"
-        />
+      <div class="category-card" @click="toggleSelection('urban')">
+        <div class="card-image">
+          <img src="../assets/sceneimages/urban-scene.svg" alt="城市人文" class="category-image" />
+          <div v-if="selectedCategories.includes('urban')" class="selected-overlay">
+            <FontAwesomeIcon icon="check-circle" class="check-icon" />
+          </div>
+        </div>
+        <div class="card-content">
+          <h3 class="category-title">城市人文</h3>
+          <div class="category-tags">
+            <span class="tag">领略旧址接触</span>
+            <span class="tag">麻石铁道漫步</span>
+            <span class="tag">老练门牌考据</span>
+          </div>
+        </div>
       </div>
 
       <!-- 自然风光 -->
-      <div v-if="activeTab === 'nature'" class="tab-content">
-        <CardList 
-          :items="natureItems"
-          @click="handleItemClick"
-        />
+      <div class="category-card" @click="toggleSelection('nature')">
+        <div class="card-image">
+          <img src="../assets/sceneimages/nature-scene.svg" alt="自然风光" class="category-image" />
+          <div v-if="selectedCategories.includes('nature')" class="selected-overlay">
+            <FontAwesomeIcon icon="check-circle" class="check-icon" />
+          </div>
+        </div>
+        <div class="card-content">
+          <h3 class="category-title">自然风光</h3>
+          <div class="category-tags">
+            <span class="tag">公园徒步</span>
+            <span class="tag">自然牧场</span>
+            <span class="tag">滨海深活</span>
+          </div>
+        </div>
       </div>
 
       <!-- 文化沉浸 -->
-      <div v-if="activeTab === 'culture'" class="tab-content">
-        <CardList 
-          :items="cultureItems"
-          @click="handleItemClick"
-        />
+      <div class="category-card" @click="toggleSelection('culture')">
+        <div class="card-image">
+          <img src="../assets/sceneimages/culture-scene.svg" alt="文化沉浸" class="category-image" />
+          <div v-if="selectedCategories.includes('culture')" class="selected-overlay">
+            <FontAwesomeIcon icon="check-circle" class="check-icon" />
+          </div>
+        </div>
+        <div class="card-content">
+          <h3 class="category-title">文化沉浸</h3>
+          <div class="category-tags">
+            <span class="tag">复古手作</span>
+            <span class="tag">文创市集</span>
+            <span class="tag">民俗体验</span>
+          </div>
+        </div>
       </div>
 
       <!-- 户外冒险 -->
-      <div v-if="activeTab === 'outdoor'" class="tab-content">
-        <CardList 
-          :items="outdoorItems"
-          @click="handleItemClick"
-        />
+      <div class="category-card" @click="toggleSelection('outdoor')">
+        <div class="card-image">
+          <img src="../assets/sceneimages/outdoor-scene.svg" alt="户外冒险" class="category-image" />
+          <div v-if="selectedCategories.includes('outdoor')" class="selected-overlay">
+            <FontAwesomeIcon icon="check-circle" class="check-icon" />
+          </div>
+        </div>
+        <div class="card-content">
+          <h3 class="category-title">户外冒险</h3>
+          <div class="category-tags">
+            <span class="tag">林间穿行</span>
+            <span class="tag">骑行漫游</span>
+            <span class="tag">江边垂钓</span>
+          </div>
+        </div>
       </div>
+
+      <!-- 影视潮流 -->
+      <div class="category-card" @click="toggleSelection('entertainment')">
+        <div class="card-image">
+          <img src="../assets/sceneimages/entertainment-scene.svg" alt="影视潮流" class="category-image" />
+          <div v-if="selectedCategories.includes('entertainment')" class="selected-overlay">
+            <FontAwesomeIcon icon="check-circle" class="check-icon" />
+          </div>
+        </div>
+        <div class="card-content">
+          <h3 class="category-title">影视潮流</h3>
+          <div class="category-tags">
+            <span class="tag">看COS</span>
+            <span class="tag">剧本寻宝</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部提示和按钮 -->
+    <div class="bottom-section">
+      <div class="next-step-hint">
+        <FontAwesomeIcon icon="info-circle" class="hint-icon" />
+        <span>下一步：选择兴趣标签，定制专属体验</span>
+      </div>
+      <div class="selection-hint">
+        最少选择2个 最多选择4个
+      </div>
+      <div class="progress-dots">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+      <button
+        class="next-btn"
+        :class="{ active: canProceed }"
+        :disabled="!canProceed"
+        @click="goToNext"
+      >
+        下一步 - 兴趣标签
+      </button>
     </div>
 
     <!-- 底部导航 -->
@@ -67,161 +160,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import StatusBar from '@/components/StatusBar.vue'
-import TabNavigation from '@/components/TabNavigation.vue'
-import CardList from '@/components/CardList.vue'
 import BottomNavigation from '@/components/BottomNavigation.vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { StepManager } from '@/utils/stepManager'
 
 const router = useRouter()
 
-// 当前激活的标签
-const activeTab = ref('urban')
-
-// 标签配置
-const tabs = ref([
-  { key: 'urban', label: '城市人文' },
-  { key: 'nature', label: '自然风光' },
-  { key: 'culture', label: '文化沉浸' },
-  { key: 'outdoor', label: '户外冒险' }
-])
-
-// 城市人文数据
-const urbanItems = ref([
-  {
-    id: 1,
-    title: '老城区漫步',
-    subtitle: '穿梭在历史悠久的街道，感受城市变迁',
-    image: '/images/urban-1.jpg',
-    tags: ['历史', '建筑', '人文'],
-    rating: 4.8,
-    price: 128,
-    location: '广州越秀区'
-  },
-  {
-    id: 2,
-    title: '骑楼建筑群',
-    subtitle: '岭南特色建筑的完美体现',
-    image: '/images/urban-2.jpg',
-    tags: ['建筑', '文化', '摄影'],
-    rating: 4.6,
-    price: 98,
-    location: '广州荔湾区'
-  },
-  {
-    id: 3,
-    title: '现代都市探索',
-    subtitle: '感受城市的现代化脉搏',
-    image: '/images/urban-3.jpg',
-    tags: ['现代', '都市', '购物'],
-    rating: 4.5,
-    price: 158,
-    location: '广州天河区'
-  }
-])
-
-// 自然风光数据
-const natureItems = ref([
-  {
-    id: 4,
-    title: '白云山登山',
-    subtitle: '城市绿肺，登高望远看广州全貌',
-    image: '/images/nature-1.jpg',
-    tags: ['登山', '自然', '健身'],
-    rating: 4.9,
-    price: 68,
-    location: '广州白云区'
-  },
-  {
-    id: 5,
-    title: '珠江夜游',
-    subtitle: '夜晚的珠江，灯火辉煌如画卷',
-    image: '/images/nature-2.jpg',
-    tags: ['水上', '夜景', '浪漫'],
-    rating: 4.7,
-    price: 188,
-    location: '广州海珠区'
-  },
-  {
-    id: 6,
-    title: '湿地公园观鸟',
-    subtitle: '与大自然亲密接触，观察候鸟迁徙',
-    image: '/images/nature-3.jpg',
-    tags: ['生态', '观鸟', '教育'],
-    rating: 4.4,
-    price: 88,
-    location: '广州南沙区'
-  }
-])
-
-// 文化沉浸数据
-const cultureItems = ref([
-  {
-    id: 7,
-    title: '粤剧体验',
-    subtitle: '传统戏曲艺术的魅力，亲身体验粤剧文化',
-    image: '/images/culture-1.jpg',
-    tags: ['戏曲', '传统', '体验'],
-    rating: 4.8,
-    price: 168,
-    location: '广州荔湾区'
-  },
-  {
-    id: 8,
-    title: '茶楼文化',
-    subtitle: '一盅两件，感受正宗的广式茶文化',
-    image: '/images/culture-2.jpg',
-    tags: ['茶文化', '美食', '社交'],
-    rating: 4.6,
-    price: 128,
-    location: '广州越秀区'
-  },
-  {
-    id: 9,
-    title: '书院古韵',
-    subtitle: '走进古代学府，感受书香门第的文化底蕴',
-    image: '/images/culture-3.jpg',
-    tags: ['古建筑', '教育', '历史'],
-    rating: 4.5,
-    price: 98,
-    location: '广州番禺区'
-  }
-])
-
-// 户外冒险数据
-const outdoorItems = ref([
-  {
-    id: 10,
-    title: '溯溪探险',
-    subtitle: '挑战自我，在山涧中寻找刺激与乐趣',
-    image: '/images/outdoor-1.jpg',
-    tags: ['溯溪', '冒险', '团队'],
-    rating: 4.7,
-    price: 268,
-    location: '广州从化区'
-  },
-  {
-    id: 11,
-    title: '野外露营',
-    subtitle: '远离城市喧嚣，在星空下享受宁静',
-    image: '/images/outdoor-2.jpg',
-    tags: ['露营', '星空', '野外'],
-    rating: 4.6,
-    price: 198,
-    location: '广州增城区'
-  },
-  {
-    id: 12,
-    title: '攀岩挑战',
-    subtitle: '征服岩壁，突破自我极限',
-    image: '/images/outdoor-3.jpg',
-    tags: ['攀岩', '极限', '挑战'],
-    rating: 4.8,
-    price: 298,
-    location: '广州花都区'
-  }
-])
+// 选中的分类
+const selectedCategories = ref<string[]>([])
 
 // 简单的提示消息
 const toast = ref({
@@ -229,23 +177,78 @@ const toast = ref({
   message: ''
 })
 
+// 计算是否可以进入下一步（最少2个，最多4个）
+const canProceed = computed(() => {
+  return selectedCategories.value.length >= 2 && selectedCategories.value.length <= 4
+})
+
+// 切换选择状态
+const toggleSelection = (category: string) => {
+  const index = selectedCategories.value.indexOf(category)
+
+  if (index > -1) {
+    // 取消选择
+    selectedCategories.value.splice(index, 1)
+    showToast(`取消选择：${getCategoryName(category)}`)
+  } else {
+    // 添加选择
+    if (selectedCategories.value.length >= 4) {
+      showToast('最多只能选择4个标签')
+      return
+    }
+    selectedCategories.value.push(category)
+    showToast(`选择了：${getCategoryName(category)}`)
+  }
+}
+
+// 获取分类名称
+const getCategoryName = (category: string) => {
+  const names: Record<string, string> = {
+    urban: '城市人文',
+    nature: '自然风光',
+    culture: '文化沉浸',
+    outdoor: '户外冒险',
+    entertainment: '影视潮流'
+  }
+  return names[category] || category
+}
+
 // 页面方法
 const goBack = () => {
   router.go(-1)
 }
 
-const createScript = () => {
-  showToast('创建剧本功能即将推出')
+const skipToNext = () => {
+  // 移除跳过功能，现在只是显示当前景点信息
+  // router.push('/create/interest-label')
 }
 
-const handleTabChange = (tabKey: string) => {
-  console.log('切换到标签:', tabKey)
+const goToNext = () => {
+  if (!canProceed.value) {
+    showToast('请至少选择2个标签，最多选择4个')
+    return
+  }
+
+  // 使用步骤管理器保存数据
+  const success = StepManager.saveStepData(1, selectedCategories.value)
+  if (!success) {
+    showToast('保存失败，请重试')
+    return
+  }
+
+  showToast('探索标签选择完成，进入下一步')
+  setTimeout(() => {
+    router.push('/create/interest-label')
+  }, 1000)
 }
 
-const handleItemClick = (item: any) => {
-  showToast(`选择了: ${item.title}`)
-  // 这里可以跳转到详情页或处理选择逻辑
-}
+// 页面加载时恢复之前的选择
+onMounted(() => {
+  const savedData = StepManager.getStepData(1)
+  if (savedData && Array.isArray(savedData)) {
+    selectedCategories.value = savedData
+  }
+})
 
 const handleNavigate = (route: string) => {
   console.log('导航到:', route)
@@ -257,7 +260,7 @@ const showToast = (message: string) => {
     show: true,
     message
   }
-  
+
   setTimeout(() => {
     toast.value.show = false
   }, 2000)
@@ -267,12 +270,48 @@ const showToast = (message: string) => {
 <style scoped>
 .exploring-label-container {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   background: #F8F9FA;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
+
+/* 状态栏样式 */
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 44px;
+  padding: 0 20px;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+  background: white;
+}
+
+.status-icons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.signal-bars {
+  display: flex;
+  align-items: end;
+  gap: 2px;
+}
+
+.bar {
+  width: 3px;
+  background: #333;
+  border-radius: 1px;
+}
+
+.bar:nth-child(1) { height: 4px; }
+.bar:nth-child(2) { height: 6px; }
+.bar:nth-child(3) { height: 8px; }
+.bar:nth-child(4) { height: 10px; }
 
 /* 头部导航 */
 .header {
@@ -291,6 +330,9 @@ const showToast = (message: string) => {
   cursor: pointer;
   border-radius: 8px;
   color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .back-btn:hover {
@@ -304,18 +346,47 @@ const showToast = (message: string) => {
   margin: 0;
 }
 
-.create-btn {
-  background: none;
-  border: none;
-  color: #2196F3;
+.location-info {
+  color: #666;
   font-size: 16px;
-  cursor: pointer;
   padding: 8px 12px;
   border-radius: 8px;
+  background: #F8F9FA;
+  border: 1px solid #E0E0E0;
+  cursor: default;
+  user-select: none;
 }
 
-.create-btn:hover {
-  background: #F0F8FF;
+/* 步骤指示器 */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: white;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.step-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.step-icon {
+  color: #2196F3;
+  font-size: 16px;
+}
+
+.step-text {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.step-progress {
+  font-size: 14px;
+  color: #666;
 }
 
 /* 内容区域 */
@@ -323,22 +394,166 @@ const showToast = (message: string) => {
   flex: 1;
   overflow-y: auto;
   padding: 16px 20px;
-  margin-bottom: 80px; /* 为底部导航留空间 */
+  margin-bottom: 120px; /* 为底部区域留空间 */
 }
 
-.tab-content {
-  animation: fadeInUp 0.3s ease-out;
+/* 分类卡片 */
+.category-card {
+  background: white;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.category-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.card-image {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  overflow: hidden;
+}
+
+.category-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+}
+
+.selected-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(33, 150, 243, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.check-icon {
+  color: white;
+  font-size: 32px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.card-content {
+  padding: 16px;
+}
+
+.category-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 12px 0;
+}
+
+.category-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  background: #F0F0F0;
+  color: #666;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* 底部区域 */
+.bottom-section {
+  position: fixed;
+  bottom: 80px; /* 在底部导航之上 */
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #F0F0F0;
+  padding: 16px 20px;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 393px;
+  margin: 0 auto;
+}
+
+.next-step-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #E8F5E8;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: #2E7D32;
+}
+
+.hint-icon {
+  font-size: 14px;
+  color: #4CAF50;
+}
+
+.selection-hint {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.progress-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #E0E0E0;
+  transition: background-color 0.3s;
+}
+
+.dot.active {
+  background: #2196F3;
+}
+
+.next-btn {
+  width: 100%;
+  background: #CCC;
+  color: white;
+  border: none;
+  border-radius: 24px;
+  height: 48px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: not-allowed;
+  transition: all 0.3s ease;
+}
+
+.next-btn.active {
+  background: #2196F3;
+  cursor: pointer;
+}
+
+.next-btn.active:hover {
+  background: #1976D2;
+  transform: translateY(-1px);
 }
 
 /* 提示消息 */
@@ -366,9 +581,21 @@ const showToast = (message: string) => {
   .header {
     padding: 12px 16px;
   }
-  
+
+  .step-indicator {
+    padding: 12px 16px;
+  }
+
   .content {
     padding: 12px 16px;
+  }
+
+  .bottom-section {
+    padding: 12px 16px;
+  }
+
+  .card-content {
+    padding: 12px;
   }
 }
 </style>
