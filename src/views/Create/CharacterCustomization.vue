@@ -1,8 +1,19 @@
-
 <template>
   <div class="character-customization-container">
     <!-- 状态栏 -->
-    <StatusBar />
+    <div class="status-bar">
+      <span class="time">12:00</span>
+      <div class="status-icons">
+        <div class="signal-bars">
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+        <div class="wifi-icon">📶</div>
+        <div class="battery-icon">🔋</div>
+      </div>
+    </div>
 
     <!-- 头部导航 -->
     <div class="header">
@@ -12,7 +23,7 @@
         </svg>
       </button>
       <h1 class="title">角色定制</h1>
-      <button class="complete-btn" @click="completeCustomization">完成</button>
+      <button class="complete-btn" @click="completeCustomization" v-if="currentStep === 4">完成</button>
     </div>
 
     <!-- 步骤进度 -->
@@ -40,15 +51,17 @@
       </div>
     </div>
 
-    <!-- 主要内容 -->
+    <!-- 主要内容 - 添加底部安全间距 -->
     <div class="main-content">
-      <!-- 第一步：角色定制 -->
+      <!-- 第一步：性别选择 -->
       <div v-if="currentStep === 1" class="step-content">
         <h2 class="step-title">Hi!</h2>
         <p class="step-subtitle">角色的性别是？</p>
 
         <div class="character-options">
-          <div class="character-card" @click="selectCharacter('male', 'gentleman')">
+          <div class="character-card"
+               :class="{ selected: selectedCharacter.gender === 'male' }"
+               @click="selectCharacter('male', 'gentleman')">
             <div class="character-avatar male-gentleman">
               <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
                 <!-- 男性绅士角色图标 -->
@@ -64,7 +77,9 @@
             </div>
           </div>
 
-          <div class="character-card" @click="selectCharacter('female', 'lady')">
+          <div class="character-card"
+               :class="{ selected: selectedCharacter.gender === 'female' }"
+               @click="selectCharacter('female', 'lady')">
             <div class="character-avatar female-lady">
               <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
                 <!-- 女性淑女角色图标 -->
@@ -86,10 +101,10 @@
         </button>
       </div>
 
-      <!-- 第二步：角色定制 -->
+      <!-- 第二步：角色职业选择 -->
       <div v-if="currentStep === 2" class="step-content">
         <h2 class="step-title">请选择你的角色</h2>
-        <p class="step-subtitle">不同角色本只以特色切换</p>
+        <p class="step-subtitle">不同角色本质以特色切换</p>
 
         <div class="role-options">
           <div
@@ -115,121 +130,41 @@
         </div>
       </div>
 
-      <!-- 第三步：角色外观设计 -->
+      <!-- 第三步：角色外观设计（相机拍照） -->
       <div v-if="currentStep === 3" class="step-content">
         <h2 class="step-title">角色外观设计</h2>
         <p class="step-subtitle">妙笔生花，一课生成你的专属形象</p>
 
-        <!-- 角色预览 -->
-        <div class="character-preview">
-          <div class="preview-container">
-            <div class="character-model">
-              <!-- 这里显示3D角色模型或2D形象 -->
-              <div class="model-placeholder">
-                <svg width="120" height="160" viewBox="0 0 120 160" fill="none">
-                  <!-- 角色形象占位图 -->
-                  <circle cx="60" cy="40" r="25" :fill="characterDesign.skinColor"/>
-                  <rect x="40" y="70" width="40" height="60" rx="5" :fill="characterDesign.clothingColor"/>
-                  <rect x="45" y="130" width="30" height="20" rx="3" fill="#8D6E63"/>
-                  <!-- 头发 -->
-                  <path d="M35 30 Q60 20 85 30 L85 45 Q60 35 35 45 Z" :fill="characterDesign.hairColor"/>
-                </svg>
-              </div>
-            </div>
-          </div>
-          <div class="indicators">
-            <div class="indicator active"></div>
-            <div class="indicator"></div>
-          </div>
-        </div>
-
-        <!-- 自定义选项 -->
-        <div class="customization-options">
-          <!-- 发型选择 -->
-          <div class="option-group">
-            <h4 class="option-title">发型</h4>
-            <div class="option-grid">
-              <div
-                v-for="hair in hairStyles"
-                :key="hair.id"
-                class="option-item"
-                :class="{ selected: characterDesign.hairStyle === hair.id }"
-                @click="updateDesign('hairStyle', hair.id)"
-              >
-                <div class="option-icon" :style="{ backgroundColor: hair.color }">
-                  {{ hair.icon }}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 服装选择 -->
-          <div class="option-group">
-            <h4 class="option-title">服装</h4>
-            <div class="option-grid">
-              <div
-                v-for="clothing in clothingOptions"
-                :key="clothing.id"
-                class="option-item"
-                :class="{ selected: characterDesign.clothing === clothing.id }"
-                @click="updateDesign('clothing', clothing.id)"
-              >
-                <div class="option-icon" :style="{ backgroundColor: clothing.color }">
-                  {{ clothing.icon }}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 配饰选择 -->
-          <div class="option-group">
-            <h4 class="option-title">配饰</h4>
-            <div class="option-grid">
-              <div
-                v-for="accessory in accessories"
-                :key="accessory.id"
-                class="option-item"
-                :class="{ selected: characterDesign.accessory === accessory.id }"
-                @click="updateDesign('accessory', accessory.id)"
-              >
-                <div class="option-icon">{{ accessory.icon }}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="navigation-buttons">
-          <button class="prev-btn" @click="prevStep">上一步</button>
-          <button class="next-btn" @click="nextStep">下一步</button>
-        </div>
-      </div>
-
-      <!-- 第四步：上传 -->
-      <div v-if="currentStep === 4" class="step-content">
-        <h2 class="step-title">角色定制-上传</h2>
-
         <!-- 相机拍照区域 -->
         <div class="camera-section">
           <div class="camera-container">
-            <div class="camera-viewfinder">
+            <div class="camera-viewfinder" :class="{ 'camera-active': cameraActive }">
               <div class="viewfinder-overlay">
-                <div class="scan-line"></div>
+                <div class="scan-line" v-if="cameraActive"></div>
                 <div class="corner top-left"></div>
                 <div class="corner top-right"></div>
                 <div class="corner bottom-left"></div>
                 <div class="corner bottom-right"></div>
               </div>
-              <div class="camera-placeholder">
+
+              <!-- 相机未启动时的占位 -->
+              <div class="camera-placeholder" v-if="!cameraActive && !capturedPhoto">
                 <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
                   <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
                   <circle cx="12" cy="13" r="4"/>
                 </svg>
                 <p>点击拍照或上传照片</p>
               </div>
+
+              <!-- 相机视频流 -->
+              <video ref="videoElement" v-if="cameraActive" autoplay playsinline class="camera-video"></video>
+
+              <!-- 拍摄的照片预览 -->
+              <img v-if="capturedPhoto" :src="capturedPhoto" alt="拍摄的照片" class="captured-photo" />
             </div>
           </div>
 
-          <!-- 拍照按钮 -->
+          <!-- 拍照控制 -->
           <div class="camera-controls">
             <button class="camera-btn gallery" @click="selectFromGallery">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -238,12 +173,27 @@
                 <polyline points="21,15 16,10 5,21"/>
               </svg>
             </button>
-            <button class="camera-btn capture" @click="capturePhoto">
+
+            <!-- 启动相机按钮 -->
+            <button class="camera-btn capture" @click="toggleCamera" v-if="!cameraActive && !capturedPhoto">
               <div class="capture-ring">
                 <div class="capture-button"></div>
               </div>
             </button>
-            <button class="camera-btn switch" @click="switchCamera">
+
+            <!-- 拍照按钮 -->
+            <button class="camera-btn capture" @click="capturePhoto" v-else-if="cameraActive">
+              <div class="capture-ring active">
+                <div class="capture-button"></div>
+              </div>
+            </button>
+
+            <!-- 重拍按钮 -->
+            <button class="camera-btn retake" @click="retakePhoto" v-if="capturedPhoto">
+              重拍
+            </button>
+
+            <button class="camera-btn switch" @click="switchCamera" v-if="cameraActive">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="1 4 1 10 7 10"/>
                 <polyline points="23 20 23 14 17 14"/>
@@ -260,13 +210,64 @@
 
         <div class="navigation-buttons">
           <button class="prev-btn" @click="prevStep">上一步</button>
-          <button class="complete-btn" @click="completeCustomization">完成定制</button>
+          <button class="next-btn" @click="nextStep" :disabled="!capturedPhoto && !uploadedImage">
+            下一步
+          </button>
+        </div>
+      </div>
+
+      <!-- 第四步：上传完成 -->
+      <div v-if="currentStep === 4" class="step-content">
+        <h2 class="step-title">角色定制-上传</h2>
+
+        <!-- 照片预览区域 -->
+        <div class="final-preview">
+          <div class="preview-header">
+            <h3>您的角色形象</h3>
+          </div>
+
+          <div class="photo-preview">
+            <img v-if="capturedPhoto" :src="capturedPhoto" alt="角色照片" class="final-photo" />
+            <img v-else-if="uploadedImage" :src="uploadedImage" alt="角色照片" class="final-photo" />
+            <div v-else class="no-photo">
+              <p>暂无照片</p>
+              <button @click="goBackToCamera" class="retry-btn">重新拍摄</button>
+            </div>
+          </div>
+
+          <!-- 角色信息摘要 -->
+          <div class="character-summary">
+            <div class="summary-item">
+              <span class="label">性别:</span>
+              <span class="value">{{ selectedCharacter.gender === 'male' ? '男性' : '女性' }}</span>
+            </div>
+            <div class="summary-item" v-if="selectedRole">
+              <span class="label">角色:</span>
+              <span class="value">{{ selectedRole.title }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="navigation-buttons">
+          <button class="prev-btn" @click="prevStep">上一步</button>
+          <button class="complete-btn" @click="completeCustomization">
+            完成定制
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- 底部导航 -->
+    <!-- 底部导航 - 每一步都有 -->
     <BottomNavigation @navigate="handleNavigate" />
+
+    <!-- 隐藏的文件输入 -->
+    <input
+      ref="fileInput"
+      type="file"
+      accept="image/*"
+      @change="handleFileUpload"
+      style="display: none"
+    />
 
     <!-- 提示消息 -->
     <div v-if="toast.show" class="toast">
@@ -276,9 +277,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, nextTick, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import StatusBar from '@/components/StatusBar.vue'
 import BottomNavigation from '@/components/BottomNavigation.vue'
 
 const router = useRouter()
@@ -323,40 +323,14 @@ const availableRoles = ref([
   }
 ])
 
-// 角色设计选项
-const characterDesign = ref({
-  hairStyle: 'long',
-  hairColor: '#8D6E63',
-  clothing: 'formal',
-  clothingColor: '#1976D2',
-  accessory: 'glasses',
-  skinColor: '#FFB74D'
-})
-
-// 发型选项
-const hairStyles = ref([
-  { id: 'short', icon: '👦', color: '#8D6E63' },
-  { id: 'long', icon: '👧', color: '#6D4C41' },
-  { id: 'curly', icon: '👨‍🦱', color: '#A1887F' },
-  { id: 'straight', icon: '👩‍🦳', color: '#5D4037' }
-])
-
-// 服装选项
-const clothingOptions = ref([
-  { id: 'formal', icon: '👔', color: '#1976D2' },
-  { id: 'casual', icon: '👕', color: '#388E3C' },
-  { id: 'elegant', icon: '👗', color: '#E91E63' },
-  { id: 'sporty', icon: '🏃‍♂️', color: '#FF9800' }
-])
-
-// 配饰选项
-const accessories = ref([
-  { id: 'glasses', icon: '👓' },
-  { id: 'hat', icon: '🎩' },
-  { id: 'necklace', icon: '📿' },
-  { id: 'watch', icon: '⌚' },
-  { id: 'none', icon: '🚫' }
-])
+// 相机和照片相关
+const uploadedImage = ref('')
+const capturedPhoto = ref('')
+const cameraActive = ref(false)
+const fileInput = ref<HTMLInputElement>()
+const videoElement = ref<HTMLVideoElement>()
+const mediaStream = ref<MediaStream>()
+const currentFacingMode = ref<'user' | 'environment'>('user') // 前后摄像头
 
 // 简单的提示消息
 const toast = ref({
@@ -382,6 +356,10 @@ const nextStep = () => {
 const prevStep = () => {
   if (currentStep.value > 1) {
     currentStep.value--
+    // 如果从当前步骤返回且相机开启，停止相机
+    if (cameraActive.value) {
+      stopCamera()
+    }
   }
 }
 
@@ -395,31 +373,134 @@ const selectRole = (role: any) => {
   showToast(`选择了角色：${role.title}`)
 }
 
-const updateDesign = (property: string, value: any) => {
-  characterDesign.value[property as keyof typeof characterDesign.value] = value
-  showToast('角色外观已更新')
+// 相机相关功能
+const toggleCamera = async () => {
+  if (!cameraActive.value) {
+    await startCamera()
+  } else {
+    stopCamera()
+  }
 }
 
-const selectFromGallery = () => {
-  showToast('打开相册选择照片')
-  // 这里实现相册选择逻辑
+const startCamera = async () => {
+  try {
+    // 请求相机权限
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: currentFacingMode.value,
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+
+    mediaStream.value = stream
+
+    await nextTick()
+    if (videoElement.value) {
+      videoElement.value.srcObject = stream
+      cameraActive.value = true
+      showToast('相机已开启')
+    }
+  } catch (error) {
+    console.error('Camera access error:', error)
+    showToast('无法访问相机，请检查权限设置')
+  }
+}
+
+const stopCamera = () => {
+  if (mediaStream.value) {
+    mediaStream.value.getTracks().forEach(track => track.stop())
+    mediaStream.value = undefined
+  }
+  cameraActive.value = false
 }
 
 const capturePhoto = () => {
-  showToast('正在拍照...')
-  // 这里实现拍照逻辑
+  if (videoElement.value) {
+    const canvas = document.createElement('canvas')
+    const context = canvas.getContext('2d')
+
+    canvas.width = videoElement.value.videoWidth
+    canvas.height = videoElement.value.videoHeight
+
+    if (context) {
+      // 如果是前置摄像头，镜像处理
+      if (currentFacingMode.value === 'user') {
+        context.translate(canvas.width, 0)
+        context.scale(-1, 1)
+      }
+
+      context.drawImage(videoElement.value, 0, 0)
+      capturedPhoto.value = canvas.toDataURL('image/jpeg', 0.8)
+      stopCamera()
+      showToast('照片拍摄成功！')
+    }
+  }
 }
 
-const switchCamera = () => {
-  showToast('切换摄像头')
-  // 这里实现摄像头切换逻辑
+const retakePhoto = () => {
+  capturedPhoto.value = ''
+  startCamera()
+}
+
+const switchCamera = async () => {
+  if (cameraActive.value) {
+    stopCamera()
+    currentFacingMode.value = currentFacingMode.value === 'user' ? 'environment' : 'user'
+    await new Promise(resolve => setTimeout(resolve, 500))
+    await startCamera()
+    showToast(`已切换到${currentFacingMode.value === 'user' ? '前置' : '后置'}摄像头`)
+  }
+}
+
+// 文件上传相关
+const selectFromGallery = () => {
+  fileInput.value?.click()
+}
+
+const handleFileUpload = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
+  if (file) {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      uploadedImage.value = e.target?.result as string
+      // 如果有上传的图片，清除拍摄的照片
+      capturedPhoto.value = ''
+      showToast('照片上传成功')
+    }
+    reader.readAsDataURL(file)
+  }
+}
+
+const goBackToCamera = () => {
+  currentStep.value = 3
+  capturedPhoto.value = ''
+  uploadedImage.value = ''
 }
 
 const completeCustomization = () => {
-  showToast('角色定制完成！')
-  // 这里可以跳转到游戏开始页面或首页
+  // 保存所有定制数据
+  const customizationData = {
+    character: selectedCharacter.value,
+    role: selectedRole.value,
+    photo: capturedPhoto.value || uploadedImage.value,
+    completedAt: Date.now()
+  }
+
+  // 保存到本地存储
+  localStorage.setItem('characterCustomization', JSON.stringify(customizationData))
+
+  showToast('角色定制完成！正在进入游戏...')
+
+  // 清理相机资源
+  if (mediaStream.value) {
+    stopCamera()
+  }
+
   setTimeout(() => {
-    router.push('/home')
+    router.push('/game')
   }, 1500)
 }
 
@@ -438,17 +519,69 @@ const showToast = (message: string) => {
     toast.value.show = false
   }, 2000)
 }
+
+// 组件销毁时清理相机资源
+onUnmounted(() => {
+  if (mediaStream.value) {
+    stopCamera()
+  }
+})
+
+// 监听页面离开，清理资源
+window.addEventListener('beforeunload', () => {
+  if (mediaStream.value) {
+    stopCamera()
+  }
+})
 </script>
 
 <style scoped>
 .character-customization-container {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   background: #F8F9FA;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
+
+/* 状态栏样式 */
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 44px;
+  padding: 0 20px;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+  background: white;
+  border-bottom: 1px solid #F0F0F0;
+  flex-shrink: 0;
+}
+
+.status-icons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.signal-bars {
+  display: flex;
+  align-items: end;
+  gap: 2px;
+}
+
+.bar {
+  width: 3px;
+  background: #333;
+  border-radius: 1px;
+}
+
+.bar:nth-child(1) { height: 4px; }
+.bar:nth-child(2) { height: 6px; }
+.bar:nth-child(3) { height: 8px; }
+.bar:nth-child(4) { height: 10px; }
 
 /* 头部导航 */
 .header {
@@ -458,6 +591,7 @@ const showToast = (message: string) => {
   padding: 12px 20px;
   background: white;
   border-bottom: 1px solid #F0F0F0;
+  flex-shrink: 0;
 }
 
 .back-btn, .complete-btn {
@@ -495,6 +629,7 @@ const showToast = (message: string) => {
   background: white;
   padding: 16px 20px;
   border-bottom: 1px solid #F0F0F0;
+  flex-shrink: 0;
 }
 
 .step-indicator {
@@ -572,12 +707,11 @@ const showToast = (message: string) => {
   background: #2196F3;
 }
 
-/* 主要内容 */
+/* 主要内容 - 重要：为底部导航预留空间 */
 .main-content {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
-  margin-bottom: 80px;
+  padding: 20px 20px 120px 20px; /* 底部增加120px空间给导航栏 */
 }
 
 .step-content {
@@ -627,7 +761,7 @@ const showToast = (message: string) => {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
-.role-card.selected {
+.character-card.selected, .role-card.selected {
   border-color: #2196F3;
   background: #F0F8FF;
 }
@@ -670,106 +804,7 @@ const showToast = (message: string) => {
   margin: 0;
 }
 
-/* 角色外观设计 */
-.character-preview {
-  text-align: center;
-  margin-bottom: 32px;
-}
-
-.preview-container {
-  width: 160px;
-  height: 200px;
-  background: linear-gradient(145deg, #E3F2FD, #BBDEFB);
-  border-radius: 16px;
-  margin: 0 auto 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-}
-
-.character-model {
-  width: 120px;
-  height: 160px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.model-placeholder {
-  opacity: 0.8;
-}
-
-.indicators {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-}
-
-.indicator {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #E0E0E0;
-  transition: background-color 0.3s ease;
-}
-
-.indicator.active {
-  background: #2196F3;
-}
-
-.customization-options {
-  margin-bottom: 32px;
-}
-
-.option-group {
-  margin-bottom: 24px;
-}
-
-.option-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #333;
-  margin: 0 0 12px 0;
-}
-
-.option-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-  gap: 12px;
-}
-
-.option-item {
-  aspect-ratio: 1;
-  border: 2px solid transparent;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.option-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-}
-
-.option-item.selected {
-  border-color: #2196F3;
-  background: #F0F8FF;
-}
-
-.option-icon {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  border-radius: 10px;
-}
-
-/* 拍照上传 */
+/* 相机区域 */
 .camera-section {
   margin-bottom: 24px;
 }
@@ -788,6 +823,11 @@ const showToast = (message: string) => {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.camera-viewfinder.camera-active {
+  background: #000;
 }
 
 .viewfinder-overlay {
@@ -797,6 +837,7 @@ const showToast = (message: string) => {
   right: 0;
   bottom: 0;
   pointer-events: none;
+  z-index: 10;
 }
 
 .scan-line {
@@ -864,6 +905,12 @@ const showToast = (message: string) => {
   font-size: 14px;
 }
 
+.camera-video, .captured-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .camera-controls {
   display: flex;
   justify-content: center;
@@ -881,6 +928,9 @@ const showToast = (message: string) => {
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
 }
 
 .camera-btn:hover {
@@ -901,6 +951,15 @@ const showToast = (message: string) => {
   background: transparent;
 }
 
+.camera-btn.retake {
+  width: 80px;
+  height: 48px;
+  border-radius: 24px;
+  background: #FF6B6B;
+  color: white;
+  border-color: #FF6B6B;
+}
+
 .capture-ring {
   width: 56px;
   height: 56px;
@@ -911,6 +970,17 @@ const showToast = (message: string) => {
   justify-content: center;
 }
 
+.capture-ring.active {
+  border-color: #FF4444;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
 .capture-button {
   width: 44px;
   height: 44px;
@@ -919,8 +989,87 @@ const showToast = (message: string) => {
   transition: all 0.2s ease;
 }
 
+.capture-ring.active .capture-button {
+  background: #FF4444;
+}
+
 .camera-btn.capture:active .capture-button {
   transform: scale(0.9);
+}
+
+/* 最终预览区域 */
+.final-preview {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.preview-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.preview-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.photo-preview {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.final-photo {
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.no-photo {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.retry-btn {
+  background: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 12px;
+}
+
+.character-summary {
+  border-top: 1px solid #F0F0F0;
+  padding-top: 16px;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.label {
+  font-size: 14px;
+  color: #666;
+}
+
+.value {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
 }
 
 .upload-tips {
@@ -940,6 +1089,7 @@ const showToast = (message: string) => {
   display: flex;
   gap: 16px;
   justify-content: space-between;
+  margin-bottom: 20px;
 }
 
 .next-btn, .prev-btn, .complete-btn {
@@ -988,6 +1138,15 @@ const showToast = (message: string) => {
   background: linear-gradient(135deg, #45A049, #388E3C);
 }
 
+/* 单按钮布局 */
+.step-content:has(.next-btn:only-child) .navigation-buttons {
+  justify-content: center;
+}
+
+.step-content:has(.next-btn:only-child) .next-btn {
+  max-width: 200px;
+}
+
 /* 提示消息 */
 .toast {
   position: fixed;
@@ -999,7 +1158,7 @@ const showToast = (message: string) => {
   padding: 12px 20px;
   border-radius: 8px;
   font-size: 14px;
-  z-index: 1000;
+  z-index: 2000;
   animation: fadeInOut 2s ease-in-out;
   max-width: 300px;
   text-align: center;
@@ -1021,7 +1180,7 @@ const showToast = (message: string) => {
   }
 
   .main-content {
-    padding: 16px;
+    padding: 16px 16px 120px 16px;
   }
 
   .step-title {
@@ -1038,15 +1197,6 @@ const showToast = (message: string) => {
 
   .character-title, .role-title {
     font-size: 16px;
-  }
-
-  .option-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-  }
-
-  .option-icon {
-    font-size: 20px;
   }
 
   .camera-controls {
@@ -1083,14 +1233,53 @@ const showToast = (message: string) => {
     padding: 12px 20px;
     font-size: 14px;
   }
+
+  .step {
+    min-width: 70px;
+  }
+
+  .step-line {
+    max-width: 30px;
+  }
+
+  .final-photo {
+    max-width: 160px;
+    max-height: 160px;
+  }
 }
 
-/* 单按钮布局 */
-.step-content:has(.next-btn:only-child) .navigation-buttons {
-  justify-content: center;
+/* 确保内容不被底部导航遮挡 */
+@media (max-height: 640px) {
+  .main-content {
+    padding-bottom: 140px;
+  }
 }
 
-.step-content:has(.next-btn:only-child) .next-btn {
-  max-width: 200px;
+/* 相机权限提示 */
+.camera-permission-denied {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+}
+
+.camera-permission-denied h3 {
+  color: #FF6B6B;
+  margin-bottom: 12px;
+}
+
+.camera-permission-denied p {
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.permission-help-btn {
+  background: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
 }
 </style>

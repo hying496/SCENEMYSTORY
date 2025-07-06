@@ -22,24 +22,24 @@
         <div class="info-form">
           <div class="form-group">
             <label class="form-label">剧本名称</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               v-model="scriptInfo.name"
               placeholder="为你的剧本起个名字"
               class="form-input"
             />
           </div>
-          
+
           <div class="form-group">
             <label class="form-label">剧本描述</label>
-            <textarea 
+            <textarea
               v-model="scriptInfo.description"
               placeholder="简单描述一下你的剧本故事背景..."
               class="form-textarea"
               rows="3"
             ></textarea>
           </div>
-          
+
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">游戏时长</label>
@@ -50,7 +50,7 @@
                 <option value="4+">4小时以上</option>
               </select>
             </div>
-            
+
             <div class="form-group">
               <label class="form-label">参与人数</label>
               <select v-model="scriptInfo.playerCount" class="form-select">
@@ -68,7 +68,7 @@
       <div class="script-type-section">
         <h3 class="section-title">剧本类型</h3>
         <div class="type-grid">
-          <div 
+          <div
             v-for="type in scriptTypes"
             :key="type.key"
             :class="['type-card', { selected: selectedTypes.includes(type.key) }]"
@@ -85,15 +85,15 @@
       <div class="difficulty-section">
         <h3 class="section-title">难度等级</h3>
         <div class="difficulty-options">
-          <div 
+          <div
             v-for="level in difficultyLevels"
             :key="level.key"
             :class="['difficulty-option', { selected: scriptInfo.difficulty === level.key }]"
             @click="scriptInfo.difficulty = level.key"
           >
             <div class="difficulty-stars">
-              <span 
-                v-for="i in 5" 
+              <span
+                v-for="i in 5"
                 :key="i"
                 :class="['star', { filled: i <= level.stars }]"
               >
@@ -112,13 +112,13 @@
       <div class="requirements-section">
         <h3 class="section-title">特殊要求</h3>
         <div class="requirements-list">
-          <label 
+          <label
             v-for="requirement in specialRequirements"
             :key="requirement.key"
             class="requirement-item"
           >
-            <input 
-              type="checkbox" 
+            <input
+              type="checkbox"
               :value="requirement.key"
               v-model="selectedRequirements"
               class="requirement-checkbox"
@@ -143,7 +143,7 @@
               <span class="toggle-slider"></span>
             </label>
           </div>
-          
+
           <div class="setting-item">
             <div class="setting-info">
               <div class="setting-name">AR增强现实</div>
@@ -154,7 +154,7 @@
               <span class="toggle-slider"></span>
             </label>
           </div>
-          
+
           <div class="setting-item">
             <div class="setting-info">
               <div class="setting-name">实时提示</div>
@@ -170,7 +170,7 @@
 
       <!-- 生成按钮 -->
       <div class="generate-section">
-        <button 
+        <button
           class="generate-btn"
           :disabled="!canGenerate"
           @click="generateScript"
@@ -333,8 +333,8 @@ const toast = ref({
 
 // 计算属性
 const canGenerate = computed(() => {
-  return scriptInfo.value.name.trim() && 
-         scriptInfo.value.description.trim() && 
+  return scriptInfo.value.name.trim() &&
+         scriptInfo.value.description.trim() &&
          selectedTypes.value.length > 0
 })
 
@@ -362,28 +362,57 @@ const toggleType = (typeKey: string) => {
 
 const generateScript = async () => {
   if (!canGenerate.value) return
-  
+
   isGenerating.value = true
   showToast('开始生成专属剧本...')
-  
+
   try {
     // 模拟生成过程
     await new Promise(resolve => setTimeout(resolve, 3000))
-    
-    showToast('剧本生成成功！')
-    
-    // 这里可以跳转到生成结果页面
-    setTimeout(() => {
-      showToast('跳转到剧本详情页面')
-      router.push('/game')
-    }, 1500)
-    
+
+    // 保存生成的剧本数据
+    const generatedScriptData = {
+      scriptInfo: scriptInfo.value,
+      selectedTypes: selectedTypes.value,
+      selectedRequirements: selectedRequirements.value,
+      customSettings: customSettings.value,
+      generatedAt: Date.now()
+    }
+
+    localStorage.setItem('generatedScript', JSON.stringify(generatedScriptData))
+
+    showToast('剧本生成成功！请选择下一步操作')
+    isGenerated.value = true
+
   } catch (error) {
     showToast('生成失败，请重试')
   } finally {
     isGenerating.value = false
   }
 }
+
+// 预览剧本 - 跳转到游戏页面
+const previewGeneratedScript = () => {
+  showToast('正在进入剧本预览...')
+  setTimeout(() => {
+    router.push('/script-preview')
+  }, 1000)
+}
+
+// 进入角色定制
+const goToCharacterCustomization = () => {
+  showToast('正在进入角色定制...')
+  setTimeout(() => {
+    router.push('/create/character-customization')
+  }, 1000)
+}
+
+// 重新生成剧本
+const regenerateScript = () => {
+  isGenerated.value = false
+  showToast('可以重新调整设置后再次生成')
+}
+
 
 const handleNavigate = (route: string) => {
   console.log('导航到:', route)
@@ -395,7 +424,7 @@ const showToast = (message: string) => {
     show: true,
     message
   }
-  
+
   setTimeout(() => {
     toast.value.show = false
   }, 2000)
@@ -860,11 +889,11 @@ input:checked + .toggle-slider:before {
   .header {
     padding: 12px 16px;
   }
-  
+
   .main-content {
     padding: 12px 16px;
   }
-  
+
   .script-info-section,
   .script-type-section,
   .difficulty-section,
@@ -872,33 +901,33 @@ input:checked + .toggle-slider:before {
   .custom-settings-section {
     padding: 16px;
   }
-  
+
   .form-row {
     grid-template-columns: 1fr;
     gap: 12px;
   }
-  
+
   .type-grid {
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 10px;
   }
-  
+
   .type-card {
     padding: 12px;
   }
-  
+
   .type-icon {
     font-size: 20px;
   }
-  
+
   .difficulty-option {
     padding: 12px;
   }
-  
+
   .setting-item {
     padding: 12px;
   }
-  
+
   .generate-btn {
     font-size: 16px;
     padding: 14px 20px;

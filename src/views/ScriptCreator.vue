@@ -32,7 +32,7 @@
       <div class="process-guide">
         <h2 class="guide-title">创建你的专属剧本杀旅行</h2>
         <p class="guide-subtitle">只需4步，轻松定制独特的旅行体验</p>
-        
+
         <div class="process-steps">
           <div class="step-item" @click="goToExploringLabel">
             <div class="step-number">1</div>
@@ -93,7 +93,7 @@
               <div class="option-desc">基于热门景点快速生成</div>
             </div>
           </div>
-          
+
           <div class="quick-option" @click="quickCreate('nearby')">
             <div class="option-icon">
               <FontAwesomeIcon icon="map-marker-alt" />
@@ -103,7 +103,7 @@
               <div class="option-desc">基于当前位置推荐</div>
             </div>
           </div>
-          
+
           <div class="quick-option" @click="quickCreate('random')">
             <div class="option-icon">
               <FontAwesomeIcon icon="dice" />
@@ -120,7 +120,7 @@
       <div class="my-drafts" v-if="drafts.length > 0">
         <h3 class="section-title">我的草稿</h3>
         <div class="draft-list">
-          <div 
+          <div
             v-for="draft in drafts"
             :key="draft.id"
             class="draft-item"
@@ -132,8 +132,8 @@
             </div>
             <div class="draft-progress">
               <div class="progress-bar">
-                <div 
-                  class="progress-fill" 
+                <div
+                  class="progress-fill"
                   :style="{ width: draft.progress + '%' }"
                 ></div>
               </div>
@@ -210,6 +210,10 @@ const goToScriptCustomization = () => {
   router.push('/create/script-customization')
 }
 
+const goToCharacterCustomization = () => {
+  router.push('/create/character-customization')
+}
+
 // 快速创建
 const quickCreate = (type: string) => {
   const typeNames = {
@@ -232,7 +236,7 @@ const formatTime = (timestamp: number) => {
   const minutes = Math.floor(diff / 1000 / 60)
   const hours = Math.floor(minutes / 60)
   const days = Math.floor(hours / 24)
-  
+
   if (days > 0) return `${days}天前`
   if (hours > 0) return `${hours}小时前`
   if (minutes > 0) return `${minutes}分钟前`
@@ -249,11 +253,15 @@ const showToast = (message: string) => {
     show: true,
     message
   }
-  
+
   setTimeout(() => {
     toast.value.show = false
   }, 2000)
 }
+
+
+
+
 </script>
 
 <style scoped>
@@ -589,27 +597,27 @@ const showToast = (message: string) => {
   .header {
     padding: 12px 16px;
   }
-  
+
   .main-content {
     padding: 16px;
   }
-  
+
   .process-guide {
     padding: 20px;
   }
-  
+
   .quick-create, .my-drafts {
     padding: 16px;
   }
-  
+
   .step-item, .quick-option, .draft-item {
     padding: 12px;
   }
-  
+
   .guide-title {
     font-size: 18px;
   }
-  
+
   .section-title {
     font-size: 16px;
   }

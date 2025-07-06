@@ -1,113 +1,109 @@
-// utils/stepManager.ts
+// src/utils/stepManager.ts
 
-export interface CreateStep {
+/**
+ * 创建流程步骤管理器
+ * 管理从景点选择到角色定制的完整流程
+ */
+
+export interface StepInfo {
   step: number
   name: string
   route: string
-  title: string
   storageKey: string
-  requiredFields: string[]
+  required: boolean
 }
 
-export const CREATE_STEPS: CreateStep[] = [
+export const CREATE_STEPS: StepInfo[] = [
   {
     step: 1,
-    name: 'exploring-label',
+    name: '探索标签',
     route: '/create/exploring-label',
-    title: '探索标签',
-    storageKey: 'selectedExploringCategories',
-    requiredFields: ['categories'] // 至少选择2个分类
+    storageKey: 'create_step_1_exploring',
+    required: true
   },
   {
     step: 2,
-    name: 'interest-label',
+    name: '兴趣标签',
     route: '/create/interest-label',
-    title: '兴趣标签',
-    storageKey: 'selectedInterestLabels',
-    requiredFields: ['interests'] // 至少选择3个兴趣
+    storageKey: 'create_step_2_interest',
+    required: true
   },
   {
     step: 3,
-    name: 'location-map',
+    name: '位置地图',
     route: '/create/location-map',
-    title: '位置地图',
-    storageKey: 'selectedLocations',
-    requiredFields: ['locations'] // 至少选择1个地点
+    storageKey: 'create_step_3_location',
+    required: true
   },
   {
     step: 4,
-    name: 'script-customization',
+    name: '剧本定制',
     route: '/create/script-customization',
-    title: '剧本定制',
-    storageKey: 'scriptCustomizationData',
-    requiredFields: ['name', 'description', 'types'] // 必填信息
+    storageKey: 'create_step_4_script',
+    required: true
+  },
+  {
+    step: 5,
+    name: '角色定制',
+    route: '/create/character-customization',
+    storageKey: 'create_step_5_character',
+    required: true
   }
 ]
 
 export class StepManager {
   /**
-   * 检查指定步骤是否已完成
+   * 检查步骤是否已完成
    */
   static isStepCompleted(step: number): boolean {
     const stepInfo = CREATE_STEPS.find(s => s.step === step)
     if (!stepInfo) return false
 
     const data = localStorage.getItem(stepInfo.storageKey)
-    if (!data) return false
-
-    try {
-      const parsedData = JSON.parse(data)
-      return this.validateStepData(stepInfo, parsedData)
-    } catch {
-      return false
-    }
+    return data !== null && data !== ''
   }
 
   /**
-   * 验证步骤数据是否有效
+   * 获取下一个未完成的步骤
    */
-  static validateStepData(stepInfo: CreateStep, data: any): boolean {
-    switch (stepInfo.step) {
-      case 1: // 探索标签
-        return Array.isArray(data) && data.length >= 2 && data.length <= 4
-      case 2: // 兴趣标签
-        return Array.isArray(data) && data.length >= 3
-      case 3: // 位置地图
-        return Array.isArray(data) && data.length >= 1
-      case 4: // 剧本定制
-        return data && data.name && data.description && data.types && data.types.length > 0
-      default:
-        return false
-    }
-  }
-
-  /**
-   * 获取用户可以访问的最大步骤
-   */
-  static getMaxAccessibleStep(): number {
-    for (let i = 1; i <= CREATE_STEPS.length; i++) {
-      if (!this.isStepCompleted(i)) {
-        return i
+  static getNextStep(): StepInfo | null {
+    for (const step of CREATE_STEPS) {
+      if (!this.isStepCompleted(step.step)) {
+        return step
       }
     }
-    return CREATE_STEPS.length // 所有步骤都完成
+    return null // 所有步骤都已完成
   }
 
   /**
-   * 检查用户是否可以访问指定步骤
+   * 获取当前应该进行的步骤
    */
-  static canAccessStep(targetStep: number): boolean {
-    const maxStep = this.getMaxAccessibleStep()
-    return targetStep <= maxStep
+  static getCurrentStep(): StepInfo {
+    const nextStep = this.getNextStep()
+    return nextStep || CREATE_STEPS[CREATE_STEPS.length - 1] // 如果都完成了，返回最后一步
   }
 
   /**
-   * 获取下一个未完成的步骤路由
+   * 检查是否可以进入指定步骤
    */
-  static getNextIncompleteStepRoute(): string {
-    const nextStep = this.getMaxAccessibleStep()
-    const stepInfo = CREATE_STEPS.find(s => s.step === nextStep)
-    return stepInfo ? stepInfo.route : '/create'
+  static canAccessStep(step: number): boolean {
+    if (step === 1) return true // 第一步总是可以访问
+
+    // 检查前面的必需步骤是否都已完成
+    for (let i = 1; i < step; i++) {
+      const stepInfo = CREATE_STEPS.find(s => s.step === i)
+      if (stepInfo?.required && !this.isStepCompleted(i)) {
+        return false
+      }
+    }
+    return true
+  }
+
+  /**
+   * 获取步骤信息
+   */
+  static getStepInfo(step: number): StepInfo | null {
+    return CREATE_STEPS.find(s => s.step === step) || null
   }
 
   /**
@@ -149,6 +145,9 @@ export class StepManager {
     CREATE_STEPS.forEach(step => {
       localStorage.removeItem(step.storageKey)
     })
+    // 清除相关的预览和角色定制数据
+    localStorage.removeItem('scriptPreview')
+    localStorage.removeItem('characterCustomization')
     console.log('🗑️ 所有创建步骤数据已清除')
   }
 
@@ -188,5 +187,139 @@ export class StepManager {
    */
   static isAllStepsCompleted(): boolean {
     return CREATE_STEPS.every(step => this.isStepCompleted(step.step))
+  }
+
+  /**
+   * 获取完整的创建数据（所有步骤的数据合并）
+   */
+  static getCompleteCreationData(): any {
+    const allData: any = {
+      steps: {},
+      preview: null,
+      character: null,
+      completedAt: null
+    }
+
+    // 获取各步骤数据
+    CREATE_STEPS.forEach(step => {
+      allData.steps[step.step] = this.getStepData(step.step)
+    })
+
+    // 获取预览数据
+    try {
+      const previewData = localStorage.getItem('scriptPreview')
+      allData.preview = previewData ? JSON.parse(previewData) : null
+    } catch (error) {
+      console.error('获取预览数据失败:', error)
+    }
+
+    // 获取角色定制数据
+    try {
+      const characterData = localStorage.getItem('characterCustomization')
+      allData.character = characterData ? JSON.parse(characterData) : null
+    } catch (error) {
+      console.error('获取角色定制数据失败:', error)
+    }
+
+    // 如果所有步骤都完成，标记完成时间
+    if (this.isAllStepsCompleted() && allData.character) {
+      allData.completedAt = allData.character.completedAt || Date.now()
+    }
+
+    return allData
+  }
+
+  /**
+   * 导航到下一个步骤
+   */
+  static navigateToNextStep(router: any): boolean {
+    const nextStep = this.getNextStep()
+    if (nextStep) {
+      router.push(nextStep.route)
+      return true
+    }
+    return false // 所有步骤都已完成
+  }
+
+  /**
+   * 验证步骤数据的有效性
+   */
+  static validateStepData(step: number, data: any): boolean {
+    switch (step) {
+      case 1: // 探索标签
+        return Array.isArray(data) && data.length >= 2 && data.length <= 4
+
+      case 2: // 兴趣标签
+        return data && typeof data === 'object'
+
+      case 3: // 位置地图
+        return Array.isArray(data) && data.length > 0
+
+      case 4: // 剧本定制
+        return data && data.scriptInfo && data.scriptInfo.name && data.scriptInfo.description
+
+      case 5: // 角色定制
+        return data && data.character && data.role && data.design
+
+      default:
+        return false
+    }
+  }
+
+  /**
+   * 获取步骤完成状态摘要
+   */
+  static getStepsSummary(): Array<{
+    step: number
+    name: string
+    completed: boolean
+    data?: any
+  }> {
+    return CREATE_STEPS.map(stepInfo => ({
+      step: stepInfo.step,
+      name: stepInfo.name,
+      completed: this.isStepCompleted(stepInfo.step),
+      data: this.getStepData(stepInfo.step)
+    }))
+  }
+
+  /**
+   * 重置特定步骤
+   */
+  static resetStep(step: number): boolean {
+    const stepInfo = CREATE_STEPS.find(s => s.step === step)
+    if (!stepInfo) return false
+
+    localStorage.removeItem(stepInfo.storageKey)
+    console.log(`🔄 步骤${step}已重置`)
+    return true
+  }
+
+  /**
+   * 检查创建流程的完整性
+   */
+  static checkIntegrity(): {
+    isValid: boolean
+    missingSteps: number[]
+    invalidSteps: number[]
+  } {
+    const missingSteps: number[] = []
+    const invalidSteps: number[] = []
+
+    CREATE_STEPS.forEach(stepInfo => {
+      const data = this.getStepData(stepInfo.step)
+
+      if (!data) {
+        missingSteps.push(stepInfo.step)
+      } else if (!this.validateStepData(stepInfo.step, data)) {
+        invalidSteps.push(stepInfo.step)
+      }
+    })
+
+    return {
+      isValid: missingSteps.length === 0 && invalidSteps.length === 0,
+      missingSteps,
+      invalidSteps
+    }
   }
 }

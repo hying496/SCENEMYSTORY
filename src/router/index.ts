@@ -9,7 +9,7 @@ const Home = () => import('@/views/Home.vue')
 const Profile = () => import('@/views/Profile.vue')
 const Create = () => import('@/views/Create.vue')
 const ScriptCreator = () => import('@/views/ScriptCreator.vue')
-const game = () => import('@/views/game.vue')
+const ScriptPreview = () => import('@/views/ScriptPreview.vue')
 
 // Create子页面
 const CreateExploringLabel = () => import('@/views/Create/ExploringLabel.vue')
@@ -108,6 +108,15 @@ const routes = [
     }
   },
   {
+    path: '/create/character-customization',
+    name: 'CreateCharacterCustomization',
+    component: CreateCharacterCustomization,
+    meta: {
+      title: '角色定制 - 灵探蓝途'
+    }
+  },
+  //
+  {
     path: '/profile',
     name: 'Profile',
     component: Profile,
@@ -116,11 +125,11 @@ const routes = [
     }
   },
   {
-    path: '/game',
-    name: 'Game',
-    component: game,
+    path: '/script-preview',
+    name: 'ScriptPreview',
+    component: ScriptPreview,
     meta: {
-      title: '游戏 - 灵探蓝途'
+      title: '剧本预览 - 灵探蓝途'
     }
   },
   // 404页面
